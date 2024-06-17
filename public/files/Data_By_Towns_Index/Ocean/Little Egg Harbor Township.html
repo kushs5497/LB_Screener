@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    
+        <script>
+            L_NO_TOUCH = false;
+            L_DISABLE_3D = false;
+        </script>
+    
+    <style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
+    <style>#map {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_ab5cbe16f7e82817fd03a91806299c3b {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+        
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_ab5cbe16f7e82817fd03a91806299c3b" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_ab5cbe16f7e82817fd03a91806299c3b = L.map(
+                "map_ab5cbe16f7e82817fd03a91806299c3b",
+                {
+                    center: [39.5591568, -74.37441439999999],
+                    crs: L.CRS.EPSG3857,
+                    zoom: 12,
+                    zoomControl: true,
+                    preferCanvas: false,
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_3a35dff131c9bc0e6fd5dd5657be7bee = L.tileLayer(
+                "https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png",
+                {"attribution": "\u0026copy; \u003ca target=\"_blank\" href=\"http://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors \u0026copy; \u003ca target=\"_blank\" href=\"http://cartodb.com/attributions\"\u003eCartoDB\u003c/a\u003e, CartoDB \u003ca target=\"_blank\" href =\"http://cartodb.com/attributions\"\u003eattributions\u003c/a\u003e", "detectRetina": false, "maxNativeZoom": 18, "maxZoom": 18, "minZoom": 0, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false}
+            ).addTo(map_ab5cbe16f7e82817fd03a91806299c3b);
+        
+    
+            var marker_f64966d81360dc0eb2658d08303822bb = L.marker(
+                [39.5591568, -74.37441439999999],
+                {}
+            ).addTo(map_ab5cbe16f7e82817fd03a91806299c3b);
+        
+    
+        var popup_c3562ae67d849decd8d27d6f4a14a9de = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_a8609c46929d624aea95e7f21b1bafba = $(`<div id="html_a8609c46929d624aea95e7f21b1bafba" style="width: 100.0%; height: 100.0%;">JOSHI, MILIND S & TRACY M</div>`)[0];
+                popup_c3562ae67d849decd8d27d6f4a14a9de.setContent(html_a8609c46929d624aea95e7f21b1bafba);
+            
+        
+
+        marker_f64966d81360dc0eb2658d08303822bb.bindPopup(popup_c3562ae67d849decd8d27d6f4a14a9de)
+        ;
+
+        
+    
+    
+            marker_f64966d81360dc0eb2658d08303822bb.bindTooltip(
+                `<div>
+                     Joshi
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_ac2a1527dee1da5ff587c818071fa5df = L.marker(
+                [39.567472, -74.370234],
+                {}
+            ).addTo(map_ab5cbe16f7e82817fd03a91806299c3b);
+        
+    
+        var popup_6b31e422045f87e8e0150294e36843fd = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_19d3276e933367276ea330296a91aac9 = $(`<div id="html_19d3276e933367276ea330296a91aac9" style="width: 100.0%; height: 100.0%;">PATEL, ANITABEN & PATEL, VISHVESH</div>`)[0];
+                popup_6b31e422045f87e8e0150294e36843fd.setContent(html_19d3276e933367276ea330296a91aac9);
+            
+        
+
+        marker_ac2a1527dee1da5ff587c818071fa5df.bindPopup(popup_6b31e422045f87e8e0150294e36843fd)
+        ;
+
+        
+    
+    
+            marker_ac2a1527dee1da5ff587c818071fa5df.bindTooltip(
+                `<div>
+                     Patel
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_017d1b2d082d06f328f04edf3c041bb3 = L.marker(
+                [39.5722194, -74.356021],
+                {}
+            ).addTo(map_ab5cbe16f7e82817fd03a91806299c3b);
+        
+    
+        var popup_aa90af35825c2f7c429a5bbee8e79942 = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_0bfbdfb547c96be7e79ae71c8eccab15 = $(`<div id="html_0bfbdfb547c96be7e79ae71c8eccab15" style="width: 100.0%; height: 100.0%;">PATEL, ANKIT A & SHRADDHA ET AL</div>`)[0];
+                popup_aa90af35825c2f7c429a5bbee8e79942.setContent(html_0bfbdfb547c96be7e79ae71c8eccab15);
+            
+        
+
+        marker_017d1b2d082d06f328f04edf3c041bb3.bindPopup(popup_aa90af35825c2f7c429a5bbee8e79942)
+        ;
+
+        
+    
+    
+            marker_017d1b2d082d06f328f04edf3c041bb3.bindTooltip(
+                `<div>
+                     Patel
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_333e33f73266b89b9681782239061932 = L.marker(
+                [39.5792929, -74.3629742],
+                {}
+            ).addTo(map_ab5cbe16f7e82817fd03a91806299c3b);
+        
+    
+        var popup_8b1e5bc21a8460a8f7567b8b797cd224 = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_2ba10575a1cfc4c3fa11b666e0362884 = $(`<div id="html_2ba10575a1cfc4c3fa11b666e0362884" style="width: 100.0%; height: 100.0%;">PATEL, ASHVIN C & DARSHANA</div>`)[0];
+                popup_8b1e5bc21a8460a8f7567b8b797cd224.setContent(html_2ba10575a1cfc4c3fa11b666e0362884);
+            
+        
+
+        marker_333e33f73266b89b9681782239061932.bindPopup(popup_8b1e5bc21a8460a8f7567b8b797cd224)
+        ;
+
+        
+    
+    
+            marker_333e33f73266b89b9681782239061932.bindTooltip(
+                `<div>
+                     Patel
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_0a589d9b92e02d7cf9aee30866f81531 = L.marker(
+                [39.6251958, -74.3140308],
+                {}
+            ).addTo(map_ab5cbe16f7e82817fd03a91806299c3b);
+        
+    
+        var popup_bab08637f7d3003b23f017df6ac55498 = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_471ce3cda6956dd4ac3c7b0e8264ab73 = $(`<div id="html_471ce3cda6956dd4ac3c7b0e8264ab73" style="width: 100.0%; height: 100.0%;">PATEL, DHUN B & BISHOP, BONNIE</div>`)[0];
+                popup_bab08637f7d3003b23f017df6ac55498.setContent(html_471ce3cda6956dd4ac3c7b0e8264ab73);
+            
+        
+
+        marker_0a589d9b92e02d7cf9aee30866f81531.bindPopup(popup_bab08637f7d3003b23f017df6ac55498)
+        ;
+
+        
+    
+    
+            marker_0a589d9b92e02d7cf9aee30866f81531.bindTooltip(
+                `<div>
+                     Patel
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_29acc476dacdd4b574edd96ef949cf7e = L.marker(
+                [39.5786767, -74.37848819999999],
+                {}
+            ).addTo(map_ab5cbe16f7e82817fd03a91806299c3b);
+        
+    
+        var popup_a832432e2161f9154153e5d38a4c9ebd = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_905b5e6b6db96d233dd643d18409f2c0 = $(`<div id="html_905b5e6b6db96d233dd643d18409f2c0" style="width: 100.0%; height: 100.0%;">PATEL, DHUN B & BISHOP, BONNIE L</div>`)[0];
+                popup_a832432e2161f9154153e5d38a4c9ebd.setContent(html_905b5e6b6db96d233dd643d18409f2c0);
+            
+        
+
+        marker_29acc476dacdd4b574edd96ef949cf7e.bindPopup(popup_a832432e2161f9154153e5d38a4c9ebd)
+        ;
+
+        
+    
+    
+            marker_29acc476dacdd4b574edd96ef949cf7e.bindTooltip(
+                `<div>
+                     Patel
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_577e3f42e9de84c0d3f6ad5d6cdbd652 = L.marker(
+                [39.5406142, -74.3889713],
+                {}
+            ).addTo(map_ab5cbe16f7e82817fd03a91806299c3b);
+        
+    
+        var popup_c992c538a1efe3246ac51fb6e3d807f4 = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_b5bfd07738910a5fa0d26e0eec5606b1 = $(`<div id="html_b5bfd07738910a5fa0d26e0eec5606b1" style="width: 100.0%; height: 100.0%;">PATEL, HIRAL & MANIAR, SOONALI</div>`)[0];
+                popup_c992c538a1efe3246ac51fb6e3d807f4.setContent(html_b5bfd07738910a5fa0d26e0eec5606b1);
+            
+        
+
+        marker_577e3f42e9de84c0d3f6ad5d6cdbd652.bindPopup(popup_c992c538a1efe3246ac51fb6e3d807f4)
+        ;
+
+        
+    
+    
+            marker_577e3f42e9de84c0d3f6ad5d6cdbd652.bindTooltip(
+                `<div>
+                     Patel
+                 </div>`,
+                {"sticky": true}
+            );
+        
+</script>
+</html>

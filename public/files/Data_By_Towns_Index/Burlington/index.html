@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            left: 300px;
+            /* Make room for the side panel */
+        }
+
+        #side-panel {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: 300px;
+            background: white;
+            overflow-y: auto;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+        }
+
+        .leaflet-container {
+            font-size: 1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="side-panel">
+        <h3>Households currently on map:</h3>
+        <table id="markers-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Address</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <input type="file" id="fileInput" />
+    </div>
+    <div id="map"></div>
+
+    <script>
+        window.onload = function () {
+            var map = L.map('map').setView([39.9872579, -74.96875349999999], 12);
+
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+                subdomains: 'abcd',
+                maxZoom: 20
+            }).addTo(map);
+
+            var markers = [];
+
+            document.getElementById('fileInput').addEventListener('change', function (e) {
+                var file = e.target.files[0];
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    console.log("File read successfully");
+                    var data = new Uint8Array(e.target.result);
+                    var workbook = XLSX.read(data, { type: 'array' });
+                    var firstSheetName = workbook.SheetNames[0];
+                    var worksheet = workbook.Sheets[firstSheetName];
+                    var json = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                    
+                    console.log("JSON data from Excel:", json);
+
+                    // Assuming the first row is headers: [lat, lng, name, address]
+                    for (var i = 1; i < json.length; i++) {
+                        var row = json[i];
+                        var marker = {
+                            latlng: [row[5], row[6]],
+                            name: row[1],
+                            address: row[2],
+                            marker: null
+                        };
+                        markers.push(marker);
+                    }
+
+                    console.log("Markers array populated:", markers);
+
+                    // Add markers to the map
+                    markers.forEach(function (markerData) {
+                        var marker = L.marker(markerData.latlng).addTo(map)
+                            .bindPopup('<b>' + markerData.name + '</b><br>' + markerData.address);
+                        markerData.marker = marker;
+                    });
+                };
+
+                reader.onerror = function (error) {
+                    console.error("Error reading file:", error);
+                };
+
+                reader.readAsArrayBuffer(file);
+            });
+
+            function updateBounds() {
+                var bounds = map.getBounds();
+
+                var markersTableBody = document.querySelector('#markers-table tbody');
+                markersTableBody.innerHTML = '';
+                markers.forEach(function (markerData) {
+                    if (bounds.contains(markerData.latlng)) {
+                        var row = document.createElement('tr');
+                        var nameCell = document.createElement('td');
+                        nameCell.textContent = markerData.name;
+                        var addressCell = document.createElement('td');
+                        addressCell.textContent = markerData.address;
+                        row.appendChild(nameCell);
+                        row.appendChild(addressCell);
+                        markersTableBody.appendChild(row);
+                    }
+                });
+            }
+
+            // Update bounds on map load and move
+            map.on('load moveend', updateBounds);
+
+            // Initial bounds update
+            map.whenReady(updateBounds);
+        }
+    </script>
+</body>
+
+</html>

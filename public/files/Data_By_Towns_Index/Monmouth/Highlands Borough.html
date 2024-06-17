@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    
+        <script>
+            L_NO_TOUCH = false;
+            L_DISABLE_3D = false;
+        </script>
+    
+    <style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
+    <style>#map {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_7c2aeb9f7afb637c891bb9e7ff85b885 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+        
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_7c2aeb9f7afb637c891bb9e7ff85b885" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_7c2aeb9f7afb637c891bb9e7ff85b885 = L.map(
+                "map_7c2aeb9f7afb637c891bb9e7ff85b885",
+                {
+                    center: [40.4069595, -74.0025381],
+                    crs: L.CRS.EPSG3857,
+                    zoom: 12,
+                    zoomControl: true,
+                    preferCanvas: false,
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_a3575894e61d78b0bc9dcd43b70fa96d = L.tileLayer(
+                "https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png",
+                {"attribution": "\u0026copy; \u003ca target=\"_blank\" href=\"http://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors \u0026copy; \u003ca target=\"_blank\" href=\"http://cartodb.com/attributions\"\u003eCartoDB\u003c/a\u003e, CartoDB \u003ca target=\"_blank\" href =\"http://cartodb.com/attributions\"\u003eattributions\u003c/a\u003e", "detectRetina": false, "maxNativeZoom": 18, "maxZoom": 18, "minZoom": 0, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false}
+            ).addTo(map_7c2aeb9f7afb637c891bb9e7ff85b885);
+        
+    
+            var marker_0be446a1b76d6c391d35572ae9699357 = L.marker(
+                [40.4069595, -74.0025381],
+                {}
+            ).addTo(map_7c2aeb9f7afb637c891bb9e7ff85b885);
+        
+    
+        var popup_68b83272ad8e049967e9c242b9bbd1cb = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_3a67fe160b7743f263f3d753f4ad4f4b = $(`<div id="html_3a67fe160b7743f263f3d753f4ad4f4b" style="width: 100.0%; height: 100.0%;">PATEL, PAYAL</div>`)[0];
+                popup_68b83272ad8e049967e9c242b9bbd1cb.setContent(html_3a67fe160b7743f263f3d753f4ad4f4b);
+            
+        
+
+        marker_0be446a1b76d6c391d35572ae9699357.bindPopup(popup_68b83272ad8e049967e9c242b9bbd1cb)
+        ;
+
+        
+    
+    
+            marker_0be446a1b76d6c391d35572ae9699357.bindTooltip(
+                `<div>
+                     Patel
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_0efab10da79e3c7f9ac34c33b960f696 = L.marker(
+                [40.4078695, -73.9960151],
+                {}
+            ).addTo(map_7c2aeb9f7afb637c891bb9e7ff85b885);
+        
+    
+        var popup_8f86fa99e37923d45e0a2ffa28aaef7b = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_70cc8d7dbb87eb8dbbc51843edad1c6a = $(`<div id="html_70cc8d7dbb87eb8dbbc51843edad1c6a" style="width: 100.0%; height: 100.0%;">DOSHI, ASHISH & LUZ</div>`)[0];
+                popup_8f86fa99e37923d45e0a2ffa28aaef7b.setContent(html_70cc8d7dbb87eb8dbbc51843edad1c6a);
+            
+        
+
+        marker_0efab10da79e3c7f9ac34c33b960f696.bindPopup(popup_8f86fa99e37923d45e0a2ffa28aaef7b)
+        ;
+
+        
+    
+    
+            marker_0efab10da79e3c7f9ac34c33b960f696.bindTooltip(
+                `<div>
+                     Doshi
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_ad6b62ec7f59a07542bbfb8f7c82ff4e = L.marker(
+                [40.406923, -73.9954056],
+                {}
+            ).addTo(map_7c2aeb9f7afb637c891bb9e7ff85b885);
+        
+    
+        var popup_516b7523f26bd33f1981fd8db9a685f1 = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_f68ed9ee1b4af53afac740487c2ec7b7 = $(`<div id="html_f68ed9ee1b4af53afac740487c2ec7b7" style="width: 100.0%; height: 100.0%;">GANDHI, VIMAL & PINKY</div>`)[0];
+                popup_516b7523f26bd33f1981fd8db9a685f1.setContent(html_f68ed9ee1b4af53afac740487c2ec7b7);
+            
+        
+
+        marker_ad6b62ec7f59a07542bbfb8f7c82ff4e.bindPopup(popup_516b7523f26bd33f1981fd8db9a685f1)
+        ;
+
+        
+    
+    
+            marker_ad6b62ec7f59a07542bbfb8f7c82ff4e.bindTooltip(
+                `<div>
+                     Gandhi
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_315362abc4e3f89001b60bf303114848 = L.marker(
+                [40.4069595, -74.0025381],
+                {}
+            ).addTo(map_7c2aeb9f7afb637c891bb9e7ff85b885);
+        
+    
+        var popup_ee6ed456e8a15d17bba478826810c070 = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_f6649f48d1dc455acc7b697e2f751eb8 = $(`<div id="html_f6649f48d1dc455acc7b697e2f751eb8" style="width: 100.0%; height: 100.0%;">JAIN, SOURABH, & CHOUDHRY, PUJU</div>`)[0];
+                popup_ee6ed456e8a15d17bba478826810c070.setContent(html_f6649f48d1dc455acc7b697e2f751eb8);
+            
+        
+
+        marker_315362abc4e3f89001b60bf303114848.bindPopup(popup_ee6ed456e8a15d17bba478826810c070)
+        ;
+
+        
+    
+    
+            marker_315362abc4e3f89001b60bf303114848.bindTooltip(
+                `<div>
+                     Jain
+                 </div>`,
+                {"sticky": true}
+            );
+        
+</script>
+</html>

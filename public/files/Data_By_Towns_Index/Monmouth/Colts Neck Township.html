@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    
+        <script>
+            L_NO_TOUCH = false;
+            L_DISABLE_3D = false;
+        </script>
+    
+    <style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
+    <style>#map {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_86a25a7836c00898a4379cb6c65739df {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+        
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_86a25a7836c00898a4379cb6c65739df" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_86a25a7836c00898a4379cb6c65739df = L.map(
+                "map_86a25a7836c00898a4379cb6c65739df",
+                {
+                    center: [40.2663033, -74.2200855],
+                    crs: L.CRS.EPSG3857,
+                    zoom: 12,
+                    zoomControl: true,
+                    preferCanvas: false,
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_2c7ee1acb2b9cda1e2498f54c1793357 = L.tileLayer(
+                "https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png",
+                {"attribution": "\u0026copy; \u003ca target=\"_blank\" href=\"http://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors \u0026copy; \u003ca target=\"_blank\" href=\"http://cartodb.com/attributions\"\u003eCartoDB\u003c/a\u003e, CartoDB \u003ca target=\"_blank\" href =\"http://cartodb.com/attributions\"\u003eattributions\u003c/a\u003e", "detectRetina": false, "maxNativeZoom": 18, "maxZoom": 18, "minZoom": 0, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false}
+            ).addTo(map_86a25a7836c00898a4379cb6c65739df);
+        
+    
+            var marker_8c850aec64befccbe7b459b85230d57a = L.marker(
+                [40.2663033, -74.2200855],
+                {}
+            ).addTo(map_86a25a7836c00898a4379cb6c65739df);
+        
+    
+        var popup_9d6812c565fa68a7ea0144788cbcee9f = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_4c77a911b521a355a08f2d7e3b005ec9 = $(`<div id="html_4c77a911b521a355a08f2d7e3b005ec9" style="width: 100.0%; height: 100.0%;">DESAI, ASHISH & ARCHANA</div>`)[0];
+                popup_9d6812c565fa68a7ea0144788cbcee9f.setContent(html_4c77a911b521a355a08f2d7e3b005ec9);
+            
+        
+
+        marker_8c850aec64befccbe7b459b85230d57a.bindPopup(popup_9d6812c565fa68a7ea0144788cbcee9f)
+        ;
+
+        
+    
+    
+            marker_8c850aec64befccbe7b459b85230d57a.bindTooltip(
+                `<div>
+                     Desai
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_1a56b5df0d58d41817d7fd25d26732f1 = L.marker(
+                [40.2923294, -74.16398939999999],
+                {}
+            ).addTo(map_86a25a7836c00898a4379cb6c65739df);
+        
+    
+        var popup_95e021cc544efed26a4898e46565905b = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_db56be9070b485576c32b3bdd0f959d6 = $(`<div id="html_db56be9070b485576c32b3bdd0f959d6" style="width: 100.0%; height: 100.0%;">DESAI, DHAVAL & BHATT, RUCHI</div>`)[0];
+                popup_95e021cc544efed26a4898e46565905b.setContent(html_db56be9070b485576c32b3bdd0f959d6);
+            
+        
+
+        marker_1a56b5df0d58d41817d7fd25d26732f1.bindPopup(popup_95e021cc544efed26a4898e46565905b)
+        ;
+
+        
+    
+    
+            marker_1a56b5df0d58d41817d7fd25d26732f1.bindTooltip(
+                `<div>
+                     Desai
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_97eb597ff977a13775794a50f8642d0f = L.marker(
+                [40.3101342, -74.1874589],
+                {}
+            ).addTo(map_86a25a7836c00898a4379cb6c65739df);
+        
+    
+        var popup_390b396df094fc7f9e1d88325b050613 = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_323c96ea9f812d7ee402d67e72e280e7 = $(`<div id="html_323c96ea9f812d7ee402d67e72e280e7" style="width: 100.0%; height: 100.0%;">KAPADIA, SUDIPT & KOLOMEYSKAYA, SVE</div>`)[0];
+                popup_390b396df094fc7f9e1d88325b050613.setContent(html_323c96ea9f812d7ee402d67e72e280e7);
+            
+        
+
+        marker_97eb597ff977a13775794a50f8642d0f.bindPopup(popup_390b396df094fc7f9e1d88325b050613)
+        ;
+
+        
+    
+    
+            marker_97eb597ff977a13775794a50f8642d0f.bindTooltip(
+                `<div>
+                     Kapadia
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_07046c915fb0042a8c042d156c9df2d1 = L.marker(
+                [40.3271658, -74.2175886],
+                {}
+            ).addTo(map_86a25a7836c00898a4379cb6c65739df);
+        
+    
+        var popup_20d21b38bea965f3271414901e597df8 = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_84e2d355704ccbb11686859f83ea5e47 = $(`<div id="html_84e2d355704ccbb11686859f83ea5e47" style="width: 100.0%; height: 100.0%;">KUMAR, KISLAY & TRIVEDI, SANGEETA</div>`)[0];
+                popup_20d21b38bea965f3271414901e597df8.setContent(html_84e2d355704ccbb11686859f83ea5e47);
+            
+        
+
+        marker_07046c915fb0042a8c042d156c9df2d1.bindPopup(popup_20d21b38bea965f3271414901e597df8)
+        ;
+
+        
+    
+    
+            marker_07046c915fb0042a8c042d156c9df2d1.bindTooltip(
+                `<div>
+                     Kumar
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_617aeac974f5c467ddff4f6a0a7b3792 = L.marker(
+                [40.2962161, -74.1201289],
+                {}
+            ).addTo(map_86a25a7836c00898a4379cb6c65739df);
+        
+    
+        var popup_f3934df883ad0d892d10848b4b37e71d = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_b0ea6f69ea2853867d3c575855492199 = $(`<div id="html_b0ea6f69ea2853867d3c575855492199" style="width: 100.0%; height: 100.0%;">LAKHANI, VIPUL</div>`)[0];
+                popup_f3934df883ad0d892d10848b4b37e71d.setContent(html_b0ea6f69ea2853867d3c575855492199);
+            
+        
+
+        marker_617aeac974f5c467ddff4f6a0a7b3792.bindPopup(popup_f3934df883ad0d892d10848b4b37e71d)
+        ;
+
+        
+    
+    
+            marker_617aeac974f5c467ddff4f6a0a7b3792.bindTooltip(
+                `<div>
+                     Lakhani
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_baa46c94baa7c7cf5fd791464656e155 = L.marker(
+                [40.3026119, -74.1085887],
+                {}
+            ).addTo(map_86a25a7836c00898a4379cb6c65739df);
+        
+    
+        var popup_fe85f3ab7442a02af5bc3efadd7a6174 = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_fc402d16ba3555b8639ecd54a24767b0 = $(`<div id="html_fc402d16ba3555b8639ecd54a24767b0" style="width: 100.0%; height: 100.0%;">PARMAR, KIRANPREET & NEELU</div>`)[0];
+                popup_fe85f3ab7442a02af5bc3efadd7a6174.setContent(html_fc402d16ba3555b8639ecd54a24767b0);
+            
+        
+
+        marker_baa46c94baa7c7cf5fd791464656e155.bindPopup(popup_fe85f3ab7442a02af5bc3efadd7a6174)
+        ;
+
+        
+    
+    
+            marker_baa46c94baa7c7cf5fd791464656e155.bindTooltip(
+                `<div>
+                     Parmar
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_a22edfe21120f298cdef092c9d769e52 = L.marker(
+                [40.33189489999999, -74.20276419999999],
+                {}
+            ).addTo(map_86a25a7836c00898a4379cb6c65739df);
+        
+    
+        var popup_70cf27e5ba7d98849885d0af771a8402 = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_732e33a918cd3790bd2135630dfc4883 = $(`<div id="html_732e33a918cd3790bd2135630dfc4883" style="width: 100.0%; height: 100.0%;">PARMAR, PARMJIT</div>`)[0];
+                popup_70cf27e5ba7d98849885d0af771a8402.setContent(html_732e33a918cd3790bd2135630dfc4883);
+            
+        
+
+        marker_a22edfe21120f298cdef092c9d769e52.bindPopup(popup_70cf27e5ba7d98849885d0af771a8402)
+        ;
+
+        
+    
+    
+            marker_a22edfe21120f298cdef092c9d769e52.bindTooltip(
+                `<div>
+                     Parmar
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_51ac4be5623feab4dd51922364b0bc3d = L.marker(
+                [40.3312434, -74.20255949999999],
+                {}
+            ).addTo(map_86a25a7836c00898a4379cb6c65739df);
+        
+    
+        var popup_dc0176449137ec7903b43a97ee04711e = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_93112618cd162abf7a7e652f0f2785e3 = $(`<div id="html_93112618cd162abf7a7e652f0f2785e3" style="width: 100.0%; height: 100.0%;">PARMAR, PARMJIT</div>`)[0];
+                popup_dc0176449137ec7903b43a97ee04711e.setContent(html_93112618cd162abf7a7e652f0f2785e3);
+            
+        
+
+        marker_51ac4be5623feab4dd51922364b0bc3d.bindPopup(popup_dc0176449137ec7903b43a97ee04711e)
+        ;
+
+        
+    
+    
+            marker_51ac4be5623feab4dd51922364b0bc3d.bindTooltip(
+                `<div>
+                     Parmar
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_174f37bddf443eb213153b43f0c2eb5e = L.marker(
+                [40.3078947, -74.1451362],
+                {}
+            ).addTo(map_86a25a7836c00898a4379cb6c65739df);
+        
+    
+        var popup_9b9b2e7e484d9a46f928ed4301519cb7 = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_4e634a85558849d2bf2d7bf1e3d6ef8e = $(`<div id="html_4e634a85558849d2bf2d7bf1e3d6ef8e" style="width: 100.0%; height: 100.0%;">PATEL, HIREN R & SHITAL</div>`)[0];
+                popup_9b9b2e7e484d9a46f928ed4301519cb7.setContent(html_4e634a85558849d2bf2d7bf1e3d6ef8e);
+            
+        
+
+        marker_174f37bddf443eb213153b43f0c2eb5e.bindPopup(popup_9b9b2e7e484d9a46f928ed4301519cb7)
+        ;
+
+        
+    
+    
+            marker_174f37bddf443eb213153b43f0c2eb5e.bindTooltip(
+                `<div>
+                     Patel
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_e6d1597a087190f7f215dc082192f268 = L.marker(
+                [40.3336101, -74.2021881],
+                {}
+            ).addTo(map_86a25a7836c00898a4379cb6c65739df);
+        
+    
+        var popup_b3cfc8850253b44d9bedfec352764a52 = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_e19429a4b2b28d8e429e6b098d68ca13 = $(`<div id="html_e19429a4b2b28d8e429e6b098d68ca13" style="width: 100.0%; height: 100.0%;">PATEL, MAYUR V & VYAS, HEMA</div>`)[0];
+                popup_b3cfc8850253b44d9bedfec352764a52.setContent(html_e19429a4b2b28d8e429e6b098d68ca13);
+            
+        
+
+        marker_e6d1597a087190f7f215dc082192f268.bindPopup(popup_b3cfc8850253b44d9bedfec352764a52)
+        ;
+
+        
+    
+    
+            marker_e6d1597a087190f7f215dc082192f268.bindTooltip(
+                `<div>
+                     Patel
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_eca9dd0289a6da8288adff76c1140b2e = L.marker(
+                [40.3112707, -74.1489814],
+                {}
+            ).addTo(map_86a25a7836c00898a4379cb6c65739df);
+        
+    
+        var popup_99c40831c982173eaea3259b87389cb4 = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_2f279967c2e59f60b7b161468fdb5792 = $(`<div id="html_2f279967c2e59f60b7b161468fdb5792" style="width: 100.0%; height: 100.0%;">PATEL, SAGAR Y & PRITI</div>`)[0];
+                popup_99c40831c982173eaea3259b87389cb4.setContent(html_2f279967c2e59f60b7b161468fdb5792);
+            
+        
+
+        marker_eca9dd0289a6da8288adff76c1140b2e.bindPopup(popup_99c40831c982173eaea3259b87389cb4)
+        ;
+
+        
+    
+    
+            marker_eca9dd0289a6da8288adff76c1140b2e.bindTooltip(
+                `<div>
+                     Patel
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_f3a73acea2eb7bcc36e8be88c623f44c = L.marker(
+                [40.3079526, -74.2175388],
+                {}
+            ).addTo(map_86a25a7836c00898a4379cb6c65739df);
+        
+    
+        var popup_0ae53a8eb054cdd23fcb0f585ab5216a = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_8c93e28c5d8c4587dfd4855b5a45fa9e = $(`<div id="html_8c93e28c5d8c4587dfd4855b5a45fa9e" style="width: 100.0%; height: 100.0%;">SHAH, DINESH & MEHTA, VARSHA</div>`)[0];
+                popup_0ae53a8eb054cdd23fcb0f585ab5216a.setContent(html_8c93e28c5d8c4587dfd4855b5a45fa9e);
+            
+        
+
+        marker_f3a73acea2eb7bcc36e8be88c623f44c.bindPopup(popup_0ae53a8eb054cdd23fcb0f585ab5216a)
+        ;
+
+        
+    
+    
+            marker_f3a73acea2eb7bcc36e8be88c623f44c.bindTooltip(
+                `<div>
+                     Shah
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_f7c4fb8f1a1f131037c8bfc3d207fa1f = L.marker(
+                [40.301682, -74.204967],
+                {}
+            ).addTo(map_86a25a7836c00898a4379cb6c65739df);
+        
+    
+        var popup_d3d30558aca72781345d13b760856d64 = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_003fe21a0a9106a875435d341dcf8d86 = $(`<div id="html_003fe21a0a9106a875435d341dcf8d86" style="width: 100.0%; height: 100.0%;">SHAH, PRANAV N & GAURI S</div>`)[0];
+                popup_d3d30558aca72781345d13b760856d64.setContent(html_003fe21a0a9106a875435d341dcf8d86);
+            
+        
+
+        marker_f7c4fb8f1a1f131037c8bfc3d207fa1f.bindPopup(popup_d3d30558aca72781345d13b760856d64)
+        ;
+
+        
+    
+    
+            marker_f7c4fb8f1a1f131037c8bfc3d207fa1f.bindTooltip(
+                `<div>
+                     Shah
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_cd70c6446c1ac915ddf533f4cc2dd454 = L.marker(
+                [40.2846778, -74.19235239999999],
+                {}
+            ).addTo(map_86a25a7836c00898a4379cb6c65739df);
+        
+    
+        var popup_08cd4a4b60c84dc8683e505c702f25b1 = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_e43b41dee400afa94ea4e272b3494b18 = $(`<div id="html_e43b41dee400afa94ea4e272b3494b18" style="width: 100.0%; height: 100.0%;">SHETH, RISHI & PATEL, MEERA</div>`)[0];
+                popup_08cd4a4b60c84dc8683e505c702f25b1.setContent(html_e43b41dee400afa94ea4e272b3494b18);
+            
+        
+
+        marker_cd70c6446c1ac915ddf533f4cc2dd454.bindPopup(popup_08cd4a4b60c84dc8683e505c702f25b1)
+        ;
+
+        
+    
+    
+            marker_cd70c6446c1ac915ddf533f4cc2dd454.bindTooltip(
+                `<div>
+                     Sheth
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_5e7bde61f867f2fdcbc810a0378837f2 = L.marker(
+                [40.2853997, -74.1552158],
+                {}
+            ).addTo(map_86a25a7836c00898a4379cb6c65739df);
+        
+    
+        var popup_c7e41a0bd4b878d9cd4845240ea6d52c = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_c2b1bc3873d4c6a6e39675fb8db039ad = $(`<div id="html_c2b1bc3873d4c6a6e39675fb8db039ad" style="width: 100.0%; height: 100.0%;">DALAL, SEEMA & KARAMBIR</div>`)[0];
+                popup_c7e41a0bd4b878d9cd4845240ea6d52c.setContent(html_c2b1bc3873d4c6a6e39675fb8db039ad);
+            
+        
+
+        marker_5e7bde61f867f2fdcbc810a0378837f2.bindPopup(popup_c7e41a0bd4b878d9cd4845240ea6d52c)
+        ;
+
+        
+    
+    
+            marker_5e7bde61f867f2fdcbc810a0378837f2.bindTooltip(
+                `<div>
+                     Dalal
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_1697638e50443ee298e0c3ee3ff653af = L.marker(
+                [40.3151777, -74.18668149999999],
+                {}
+            ).addTo(map_86a25a7836c00898a4379cb6c65739df);
+        
+    
+        var popup_4b7efed73853d90a2fd85f38dfb2b363 = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_d06d14865a8044601f7ff0fc9a74df9d = $(`<div id="html_d06d14865a8044601f7ff0fc9a74df9d" style="width: 100.0%; height: 100.0%;">RAVAL, SUMUL & SIMA</div>`)[0];
+                popup_4b7efed73853d90a2fd85f38dfb2b363.setContent(html_d06d14865a8044601f7ff0fc9a74df9d);
+            
+        
+
+        marker_1697638e50443ee298e0c3ee3ff653af.bindPopup(popup_4b7efed73853d90a2fd85f38dfb2b363)
+        ;
+
+        
+    
+    
+            marker_1697638e50443ee298e0c3ee3ff653af.bindTooltip(
+                `<div>
+                     Raval
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_beffd06ae3c875e6fe8abf11ce7bab2c = L.marker(
+                [40.3072194, -74.1438649],
+                {}
+            ).addTo(map_86a25a7836c00898a4379cb6c65739df);
+        
+    
+        var popup_d5b4c2a36621d7d1f230c1d60dec31d7 = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_7c9e41ec126f7f5e0db6bfa40c1e17bf = $(`<div id="html_7c9e41ec126f7f5e0db6bfa40c1e17bf" style="width: 100.0%; height: 100.0%;">PARIKH, SMITA</div>`)[0];
+                popup_d5b4c2a36621d7d1f230c1d60dec31d7.setContent(html_7c9e41ec126f7f5e0db6bfa40c1e17bf);
+            
+        
+
+        marker_beffd06ae3c875e6fe8abf11ce7bab2c.bindPopup(popup_d5b4c2a36621d7d1f230c1d60dec31d7)
+        ;
+
+        
+    
+    
+            marker_beffd06ae3c875e6fe8abf11ce7bab2c.bindTooltip(
+                `<div>
+                     Parikh
+                 </div>`,
+                {"sticky": true}
+            );
+        
+</script>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    
+        <script>
+            L_NO_TOUCH = false;
+            L_DISABLE_3D = false;
+        </script>
+    
+    <style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
+    <style>#map {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_204041f70ce6509ff7c1a8cdd4b740df {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+        
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_204041f70ce6509ff7c1a8cdd4b740df" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_204041f70ce6509ff7c1a8cdd4b740df = L.map(
+                "map_204041f70ce6509ff7c1a8cdd4b740df",
+                {
+                    center: [39.2955368, -75.1706846],
+                    crs: L.CRS.EPSG3857,
+                    zoom: 12,
+                    zoomControl: true,
+                    preferCanvas: false,
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_4d59c801f13c9d43f82860a2f643cdbc = L.tileLayer(
+                "https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png",
+                {"attribution": "\u0026copy; \u003ca target=\"_blank\" href=\"http://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors \u0026copy; \u003ca target=\"_blank\" href=\"http://cartodb.com/attributions\"\u003eCartoDB\u003c/a\u003e, CartoDB \u003ca target=\"_blank\" href =\"http://cartodb.com/attributions\"\u003eattributions\u003c/a\u003e", "detectRetina": false, "maxNativeZoom": 18, "maxZoom": 18, "minZoom": 0, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false}
+            ).addTo(map_204041f70ce6509ff7c1a8cdd4b740df);
+        
+    
+            var marker_4ab123231f516b54dc2061bb717cc555 = L.marker(
+                [39.2955368, -75.1706846],
+                {}
+            ).addTo(map_204041f70ce6509ff7c1a8cdd4b740df);
+        
+    
+        var popup_056c650623a3ca7d8087838ed7aab0d8 = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_72d3629501212b8ae54d3de56ae80dd1 = $(`<div id="html_72d3629501212b8ae54d3de56ae80dd1" style="width: 100.0%; height: 100.0%;">SHARMA, PRAKASH C & YOGESH</div>`)[0];
+                popup_056c650623a3ca7d8087838ed7aab0d8.setContent(html_72d3629501212b8ae54d3de56ae80dd1);
+            
+        
+
+        marker_4ab123231f516b54dc2061bb717cc555.bindPopup(popup_056c650623a3ca7d8087838ed7aab0d8)
+        ;
+
+        
+    
+    
+            marker_4ab123231f516b54dc2061bb717cc555.bindTooltip(
+                `<div>
+                     Sharma
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_f9c5314b07a4247e659b975be591c4ec = L.marker(
+                [39.271124, -75.230784],
+                {}
+            ).addTo(map_204041f70ce6509ff7c1a8cdd4b740df);
+        
+    
+        var popup_833f1aef8c11a0b271a58eb9d263cc10 = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_0e69918d222c185cec8c97aa1676eb37 = $(`<div id="html_0e69918d222c185cec8c97aa1676eb37" style="width: 100.0%; height: 100.0%;">SHARMA, PRAKASH P & YOGESH</div>`)[0];
+                popup_833f1aef8c11a0b271a58eb9d263cc10.setContent(html_0e69918d222c185cec8c97aa1676eb37);
+            
+        
+
+        marker_f9c5314b07a4247e659b975be591c4ec.bindPopup(popup_833f1aef8c11a0b271a58eb9d263cc10)
+        ;
+
+        
+    
+    
+            marker_f9c5314b07a4247e659b975be591c4ec.bindTooltip(
+                `<div>
+                     Sharma
+                 </div>`,
+                {"sticky": true}
+            );
+        
+</script>
+</html>

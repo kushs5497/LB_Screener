@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    
+        <script>
+            L_NO_TOUCH = false;
+            L_DISABLE_3D = false;
+        </script>
+    
+    <style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
+    <style>#map {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_5cba15860802cfb151253fcd1b4d288a {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+        
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_5cba15860802cfb151253fcd1b4d288a" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_5cba15860802cfb151253fcd1b4d288a = L.map(
+                "map_5cba15860802cfb151253fcd1b4d288a",
+                {
+                    center: [39.8108274, -75.1595075],
+                    crs: L.CRS.EPSG3857,
+                    zoom: 12,
+                    zoomControl: true,
+                    preferCanvas: false,
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_06b7eef9b3821c5f9130d973a19d280e = L.tileLayer(
+                "https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png",
+                {"attribution": "\u0026copy; \u003ca target=\"_blank\" href=\"http://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors \u0026copy; \u003ca target=\"_blank\" href=\"http://cartodb.com/attributions\"\u003eCartoDB\u003c/a\u003e, CartoDB \u003ca target=\"_blank\" href =\"http://cartodb.com/attributions\"\u003eattributions\u003c/a\u003e", "detectRetina": false, "maxNativeZoom": 18, "maxZoom": 18, "minZoom": 0, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false}
+            ).addTo(map_5cba15860802cfb151253fcd1b4d288a);
+        
+    
+            var marker_1801ee5a119914bc6f420d01163b7276 = L.marker(
+                [39.8108274, -75.1595075],
+                {}
+            ).addTo(map_5cba15860802cfb151253fcd1b4d288a);
+        
+    
+        var popup_d26a7139a67c85860d51d49500d0f48d = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_5c03a2a98dffebd2d6503a84fa9b0649 = $(`<div id="html_5c03a2a98dffebd2d6503a84fa9b0649" style="width: 100.0%; height: 100.0%;">PATEL, BALVANT R & SHUSHILA B</div>`)[0];
+                popup_d26a7139a67c85860d51d49500d0f48d.setContent(html_5c03a2a98dffebd2d6503a84fa9b0649);
+            
+        
+
+        marker_1801ee5a119914bc6f420d01163b7276.bindPopup(popup_d26a7139a67c85860d51d49500d0f48d)
+        ;
+
+        
+    
+    
+            marker_1801ee5a119914bc6f420d01163b7276.bindTooltip(
+                `<div>
+                     Patel
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_df02148852c92f20db59e60238fc1838 = L.marker(
+                [39.8193139, -75.1587186],
+                {}
+            ).addTo(map_5cba15860802cfb151253fcd1b4d288a);
+        
+    
+        var popup_b5441e02ed16e86b57cdd1a092b82345 = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_02b0161d108a0595155e86570cef5285 = $(`<div id="html_02b0161d108a0595155e86570cef5285" style="width: 100.0%; height: 100.0%;">AMIN, SARAH & ZEESHAN</div>`)[0];
+                popup_b5441e02ed16e86b57cdd1a092b82345.setContent(html_02b0161d108a0595155e86570cef5285);
+            
+        
+
+        marker_df02148852c92f20db59e60238fc1838.bindPopup(popup_b5441e02ed16e86b57cdd1a092b82345)
+        ;
+
+        
+    
+    
+            marker_df02148852c92f20db59e60238fc1838.bindTooltip(
+                `<div>
+                     Amin
+                 </div>`,
+                {"sticky": true}
+            );
+        
+</script>
+</html>
