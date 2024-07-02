@@ -22,11 +22,11 @@ window.onload = function () {
 
         if (newWidth > 100 && newWidth < window.innerWidth - 100) {
             leftSide.style.width = `${newWidth}px`;
-            mapDiv.style.left = `${newWidth}px`; // Move the map along with the side panel
-            resizer.style.left = `${newWidth}px`; // Move the resizer along with the side panel
+            mapDiv.style.left = `${newWidth}px`;
+            resizer.style.left = `${newWidth}px`;
 
-            map.invalidateSize(); // Invalidate map size to update its layout
-            updateBounds(); // Update bounds based on new map size
+            map.invalidateSize();
+            updateBounds();
         }
 
         resizer.style.cursor = 'col-resize';
@@ -45,8 +45,7 @@ window.onload = function () {
         document.removeEventListener('mouseup', mouseUpHandler);
     };
 
-    var map = L.map('map').setView([39.9872579, -74.96875349999999], 13);
-
+    var map = L.map('map').setView([40.058323, -74.405663], 8.5);
     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
         subdomains: 'abcd',
@@ -54,140 +53,190 @@ window.onload = function () {
     }).addTo(map);
 
     var markers = [];
+    var selectedCounty = null;
+    var selectedTown = null;
 
-    // Fetch counties and populate dropdown
     $.get('/list-counties', function (counties) {
         var dropdown = $('#countyDropdown');
-        dropdown.empty(); // Clear existing options
+        dropdown.empty();
+        dropdown.append($('<option></option>').attr('value', "Select a County...").text("Select a County..."));
         counties.forEach(function (county) {
-            var option = $('<option></option>').attr('value', county).text(county);
-            dropdown.append(option);
+            dropdown.append($('<option></option>').attr('value', county).text(county));
         });
     });
 
-    // Handle change event on county dropdown
     $('#countyDropdown').change(function () {
-        var selectedCounty = $(this).val();
+        if ($(this).val() === 'Select a County...') {
+            $('#townDropdown').empty().append($('<option></option>').attr('value', null).text('Select a Town...'));
+        }
+        selectedCounty = $(this).val();
         if (selectedCounty) {
-            // Fetch list of towns for the selected county
             $.get('/list-towns/' + selectedCounty, function (towns) {
                 var dropdown = $('#townDropdown');
-                dropdown.empty(); // Clear existing options
+                dropdown.empty();
+                dropdown.append($('<option></option>').attr('value', null).text('Select a Town...'));
                 towns.forEach(function (town) {
-                    var option = $('<option></option>').attr('value', town).text(town);
-                    dropdown.append(option);
+                    dropdown.append($('<option></option>').attr('value', town).text(town.replace('.xlsx', '')));
                 });
             });
         }
     });
 
-    // Function to clear existing markers from the map
     function clearMarkers() {
         markers.forEach(function (markerData) {
             if (markerData.marker) {
                 map.removeLayer(markerData.marker);
             }
         });
-        markers = []; // Reset markers array
+        markers = [];
     }
 
-    var lat_sum = 0;
-    var lng_sum = 0;
-    var count_markers = 0;
-
     $('#townDropdown').change(function () {
-        var selectedCounty = $('#countyDropdown').val();
-        var selectedTown = $(this).val();
+        selectedTown = $(this).val();
         if (selectedCounty && selectedTown) {
-            clearMarkers(); // Clear old markers
+            clearMarkers();
 
             fetch(`/files/Data_By_Towns_Index/${selectedCounty}/${selectedTown}`)
                 .then(response => response.arrayBuffer())
                 .then(data => {
-                    var workbook = XLSX.read(data, { type: 'array' }); // Use 'array' type instead of 'binary'
+                    var workbook = XLSX.read(data, { type: 'array' });
                     var firstSheetName = workbook.SheetNames[0];
                     var worksheet = workbook.Sheets[firstSheetName];
                     var json = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
-                    var min_lat = 90
-                    var max_lat = -90
-                    var min_lng = 180
-                    var max_lng = -180
-                    markers = []; // Reset markers array
+                    markers = [];
                     for (var i = 1; i < json.length; i++) {
                         var row = json[i];
-
-                        if (row[5]<min_lat) min_lat = row[5];
-                        if (row[5]>max_lat) max_lat = row[5];
-                        if (row[6]<min_lng) min_lng = row[6];
-                        if (row[6]>max_lng) max_lng = row[6];
-
                         var marker = {
                             latlng: [row[5], row[6]],
                             name: row[1],
                             address: row[2],
+                            notes: row[7] || "",
                             marker: null
                         };
                         markers.push(marker);
                     }
 
-                    map.setView([(min_lat+max_lat)/2, (min_lng+max_lng)/2], 13);
+                    if (markers.length != 0) {
+                        var bounds = L.latLngBounds(markers.map(marker => marker.latlng));
+                        map.fitBounds(bounds);
+                    }
 
-                    // Add new markers to the map
                     markers.forEach(function (markerData) {
                         var marker = L.marker(markerData.latlng).addTo(map)
                             .bindPopup('<b>' + markerData.name + '</b><br>' + markerData.address);
+                        marker.on('click', function () {
+                            map.panTo(marker.getLatLng());
+                            updateBounds();
+                            marker.openPopup();
+                        });
                         markerData.marker = marker;
                     });
-                    updateBounds(); // Update bounds after adding markers
+                    updateBounds();
                 })
                 .catch(error => console.error('Error fetching or processing data:', error));
-
         }
     });
 
     function updateBounds() {
         var bounds = map.getBounds();
-
         var markersTableBody = document.querySelector('#markers-table tbody');
         markersTableBody.innerHTML = '';
-        markers.forEach(function (markerData) {
+        markers.forEach(function (markerData, index) {
             if (bounds.contains(markerData.latlng)) {
                 var row = document.createElement('tr');
-                var nameCell = document.createElement('td');
-                nameCell.textContent = markerData.name;
-                var addressCell = document.createElement('td');
-                addressCell.textContent = markerData.address;
-                row.appendChild(nameCell);
-                row.appendChild(addressCell);
+                row.innerHTML = `
+                    <td class="name">${markerData.name}</td>
+                    <td class="address">${markerData.address}</td>
+                    <td><input type="text" value="${markerData.notes}" data-index="${index}" class="notes-input" /></td>
+                `;
                 row.dataset.lat = markerData.latlng[0];
                 row.dataset.lng = markerData.latlng[1];
-                row.dataset.index = markers.indexOf(markerData);
+                row.dataset.index = index;
                 markersTableBody.appendChild(row);
             }
         });
     }
 
-    // Event listener for table row clicks
     document.querySelector('#markers-table tbody').addEventListener('click', function (e) {
         var target = e.target.closest('tr');
-        if (target) {
+        if (target && (e.target.classList.contains('name') || e.target.classList.contains('address'))) {
             var lat = parseFloat(target.dataset.lat);
             var lng = parseFloat(target.dataset.lng);
             var index = target.dataset.index;
             var markerData = markers[index];
-            map.setView([lat, lng], 17); // Center map on the selected marker
+            map.setView([lat, lng], 17);
             if (markerData && markerData.marker) {
-                markerData.marker.openPopup(); // Open the popup for the selected marker
+                markerData.marker.openPopup();
             }
         }
     });
 
+    document.querySelector('#markers-table tbody').addEventListener('input', function (e) {
+        if (e.target.classList.contains('notes-input')) {
+            var index = e.target.dataset.index;
+            markers[index].notes = e.target.value;
+        }
+    });
 
+    function saveNotes() {
+        var updatedData = markers.map(marker => ({
+            name: marker.name,
+            address: marker.address,
+            notes: marker.notes
+        }));
 
-    // Update bounds on map load and move
+        fetch(`/save-notes/${selectedCounty}/${selectedTown}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(updatedData)
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('Notes saved successfully!');
+            } else {
+                alert('Failed to save notes.');
+            }
+        })
+        .catch(error => {
+            console.error('Error saving notes:', error);
+            alert('Error saving notes.');
+        });
+    }
+
+    const saveButton = document.createElement('button');
+    saveButton.textContent = 'Save Notes';
+    saveButton.addEventListener('click', saveNotes);
+    document.getElementById('side-panel').appendChild(saveButton);
+
     map.on('load moveend', updateBounds);
 
-    // Initial bounds update
+    map.on('boxzoomend', function (e) {
+        var boxBounds = e.boxZoomBounds;
+        var markersTableBody = document.querySelector('#markers-table tbody');
+        var rows = Array.from(markersTableBody.querySelectorAll('tr'));
+
+        var selectedRows = [];
+        var otherRows = [];
+
+        rows.forEach(function (row) {
+            var lat = parseFloat(row.dataset.lat);
+            var lng = parseFloat(row.dataset.lng);
+            if (boxBounds.contains([lat, lng])) {
+                row.style.fontWeight = 'bold';
+                selectedRows.push(row);
+            } else {
+                row.style.fontWeight = 'normal';
+                otherRows.push(row);
+            }
+        });
+
+        markersTableBody.innerHTML = '';
+        selectedRows.forEach(row => markersTableBody.appendChild(row));
+        otherRows.forEach(row => markersTableBody.appendChild(row));
+    });
+
     map.whenReady(updateBounds);
 }

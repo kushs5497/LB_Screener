@@ -31,7 +31,7 @@
             left: 310px;
         }
 
-        #dragMe{
+        #dragMe {
             position: absolute;
             width: 10px;
             cursor: col-resize;
@@ -54,7 +54,7 @@
             padding: 10px;
         }
 
-        .form-control{
+        .form-control {
             margin-top: 5px;
             margin-bottom: 5px;
         }
@@ -78,6 +78,22 @@
         th {
             background-color: #f2f2f2;
         }
+
+        .county-tooltip {
+            font-size: 14px;
+            /* Adjust font size as needed */
+            font-family: 'Foundry', sans-serif;
+            /* Specify font family */
+            border: 1px solid #808080;
+            /* Border color and width */
+            background-color: rgb(255, 255, 255);
+            /* Tooltip background color */
+            padding: 4px;
+            /* Padding inside the tooltip */
+            border-radius: 5px;
+            /* Rounded corners */
+            box-shadow: 10px 10 10px rgba(0, 0, 0, 0.1);
+        }
     </style>
     </style>
 </head>
@@ -86,13 +102,18 @@
     <div id="split-container" style="display: flex">
         <div id="side-panel">
             <h3>Households currently on map:</h3>
-            <select id="countyDropdown" class="form-control"></select>
-            <select id="townDropdown" class="form-control"></select>
+            <select id="countyDropdown" class="form-control">
+                <option selected="selected">Select a County...</option>
+            </select>
+            <select id="townDropdown" class="form-control">
+                <option selected="selected">Select a Town...</option>
+            </select>
             <table id="markers-table">
                 <thead>
                     <tr>
                         <th>Name</th>
                         <th>Address</th>
+                        <th>Notes</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -104,7 +125,6 @@
     </div>
 
     <script src="script.js"></script>
-    <script src="resizer.js"></script>
 
 </body>
 
