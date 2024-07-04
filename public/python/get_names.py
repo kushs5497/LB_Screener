@@ -16,7 +16,7 @@ last_names = pd.read_csv(StringIO(response.text))
 driver = sf.web_driver()
 
 last_name_list = 'Full List'
-counties_list = ['Middlesex']
+counties_list = ['Burlington']
 # last_names_to_itr = last_names[last_name_list]
 last_names_to_itr = last_names[last_name_list][last_names[last_name_list].notna()]
 
@@ -28,20 +28,21 @@ for county in counties_list:
     print(f'County: {county}\n')
     skip_towns = False
     for index, row in links_df.iterrows():
+        # if row['Link'] == 'https://wipp.edmundsassoc.com/Wipp/?wippid=0301': continue
 
         # ====================
         # Delete this section
         # ====================
-        last_town_done = 'Willingboro Township'
+        """ last_town_done = 'Willingboro Township'
         if row['Municipality'] == last_town_done:
             skip_towns = False
             continue
         elif skip_towns:
-            continue
+            continue """
         # ====================
 
         data = []
-        print('\n' + row['Municipality'])
+        print('\n' + row['Municipality'] + f' {index} of {links_df.shape[0]}')
         for name in tqdm(last_names_to_itr):
             data = sf.search_lastname_town(row['Municipality'], row['Link'], name, data, driver)
 
