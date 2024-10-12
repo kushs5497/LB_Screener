@@ -2,8 +2,8 @@ import googlemaps
 import pandas as pd
 import os
 
-# gmaps = googlemaps.Client(key='AIzaSyAs0368SuuGITdhBJkQew9XnU374PBYEBQ')
-gmaps = googlemaps.Client(key='AIzaSyCBEKm6u4wUM80ocjXwhXrEE7GMiTQo_fQ')
+# gmaps = googlemaps.Client(key='*****')
+gmaps = googlemaps.Client(key='*****')
 
 counties_list = ['Burlington']
 
