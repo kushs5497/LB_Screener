@@ -1,4 +1,7 @@
-Archive/
-Data_By_Towns/
-Links_By_County/
-node_modules/
+__pycache__
+Archive
+Data_By_Towns_Index
+downloaded_addys
+Links_By_County
+node_modules
+PDFs
