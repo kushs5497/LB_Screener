@@ -42,12 +42,14 @@ window.onload = () => {
 
   const debouncedUpdateMapLayout = debounce(updateMapLayout, 100);
 
-  const showLoading = (element) => {
+  const showLoading = (element, text = 'Loading...') => {
+    element.disabled = true;
     element.classList.add('disabled');
-    element.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Loading...';
+    element.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>${text}`;
   };
 
   const hideLoading = (element, originalText) => {
+    element.disabled = false;
     element.classList.remove('disabled');
     element.innerHTML = originalText;
   };
@@ -122,7 +124,12 @@ window.onload = () => {
   // Fetch counties and populate dropdown
   const loadCounties = () => {
     fetch('/list-counties')
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
       .then(counties => {
         countyDropdown.innerHTML = '<option value="">Select a County...</option>';
         counties.forEach(county => {
@@ -144,27 +151,85 @@ window.onload = () => {
     townDropdown.innerHTML = '<option value="">Select a Town...</option>';
     
     if (selectedCounty && selectedCounty !== '') {
-      showLoading(townDropdown);
+      showLoading(townDropdown, 'Loading towns...');
       
       fetch(`/list-towns/${selectedCounty}`)
-        .then(response => response.json())
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.json();
+        })
         .then(towns => {
+          // Clear existing options and add default first
           townDropdown.innerHTML = '<option value="">Select a Town...</option>';
+          
+          // Add town options
           towns.forEach(town => {
             const option = document.createElement('option');
             option.value = town;
             option.textContent = town.replace('.xlsx', '');
             townDropdown.appendChild(option);
           });
-          hideLoading(townDropdown, '');
+          
+          hideLoading(townDropdown, 'Select a Town...');
         })
         .catch(error => {
           console.error('Error fetching towns:', error);
-          hideLoading(townDropdown, '');
+          townDropdown.innerHTML = '<option value="">Select a Town...</option>';
+          townDropdown.disabled = false;
           alert('Failed to load towns. Please try again.');
         });
     } else {
       selectedCounty = null;
+      clearMarkers();
+    }
+  });
+
+  // Town dropdown change event
+  townDropdown.addEventListener('change', () => {
+    selectedTown = townDropdown.value;
+    
+    if (selectedCounty && selectedTown) {
+      clearMarkers();
+      showLoading(townDropdown, 'Loading data...');
+      
+      fetch(`/files/Data_By_Towns_Index/${selectedCounty}/${selectedTown}`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.arrayBuffer();
+        })
+        .then(data => {
+          const workbook = XLSX.read(data, { type: 'array' });
+          const firstSheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[firstSheetName];
+          const json = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+          
+          markers = [];
+          for (let i = 1; i < json.length; i++) {
+            const row = json[i];
+            if (row[6] && row[5]) { // Ensure lat/lng exist
+              markers.push({
+                latlng: [row[6], row[5]],
+                name: row[0] || 'Unknown',
+                address: row[1] || 'No address',
+                notes: row[8] || '',
+                marker: null
+              });
+            }
+          }
+          
+          createMarkers();
+          hideLoading(townDropdown, selectedTown.replace('.xlsx', ''));
+        })
+        .catch(error => {
+          console.error('Error fetching or processing data:', error);
+          hideLoading(townDropdown, selectedTown.replace('.xlsx', ''));
+          alert('Failed to load data. Please try again.');
+        });
+    } else {
       clearMarkers();
     }
   });
@@ -196,49 +261,6 @@ window.onload = () => {
     markers = [];
     markersTableBody.innerHTML = '';
   };
-
-  // Town dropdown change event
-  townDropdown.addEventListener('change', () => {
-    selectedTown = townDropdown.value;
-    
-    if (selectedCounty && selectedTown) {
-      clearMarkers();
-      showLoading(townDropdown);
-      
-      fetch(`/files/Data_By_Towns_Index/${selectedCounty}/${selectedTown}`)
-        .then(response => response.arrayBuffer())
-        .then(data => {
-          const workbook = XLSX.read(data, { type: 'array' });
-          const firstSheetName = workbook.SheetNames[0];
-          const worksheet = workbook.Sheets[firstSheetName];
-          const json = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-          
-          markers = [];
-          for (let i = 1; i < json.length; i++) {
-            const row = json[i];
-            if (row[6] && row[5]) { // Ensure lat/lng exist
-              markers.push({
-                latlng: [row[6], row[5]],
-                name: row[0] || 'Unknown',
-                address: row[1] || 'No address',
-                notes: row[8] || '',
-                marker: null
-              });
-            }
-          }
-          
-          createMarkers();
-          hideLoading(townDropdown, '');
-        })
-        .catch(error => {
-          console.error('Error fetching or processing data:', error);
-          hideLoading(townDropdown, '');
-          alert('Failed to load data. Please try again.');
-        });
-    } else {
-      clearMarkers();
-    }
-  });
 
   // Create markers on the map from loaded data
   const createMarkers = () => {
@@ -369,7 +391,8 @@ window.onload = () => {
       return;
     }
     
-    showLoading(saveButton);
+    const originalButtonText = saveButton.innerHTML;
+    showLoading(saveButton, 'Saving...');
     
     // Create an array of objects with name, address, and notes
     const notes = markers.map(marker => ({
@@ -384,17 +407,19 @@ window.onload = () => {
       body: JSON.stringify({ notes })
     })
       .then(response => {
-        if (response.ok) {
-          alert('Notes saved successfully.');
-        } else {
-          alert('Failed to save notes.');
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
         }
-        hideLoading(saveButton, '<i class="fas fa-save me-1"></i> Save Notes');
+        return response.text();
+      })
+      .then(data => {
+        alert('Notes saved successfully.');
+        hideLoading(saveButton, originalButtonText);
       })
       .catch(error => {
         console.error('Error saving notes:', error);
-        alert('Failed to save notes.');
-        hideLoading(saveButton, '<i class="fas fa-save me-1"></i> Save Notes');
+        alert('Failed to save notes. Please try again.');
+        hideLoading(saveButton, originalButtonText);
       });
   });
 
@@ -407,7 +432,8 @@ window.onload = () => {
       return;
     }
     
-    showLoading(printButton);
+    const originalButtonText = printButton.innerHTML;
+    showLoading(printButton, 'Generating PDF...');
     
     const { jsPDF } = window.jspdf;
     
@@ -499,12 +525,12 @@ window.onload = () => {
       });
       
       pdf.save(`${townTitle}_Markers.pdf`);
-      hideLoading(printButton, '<i class="fas fa-file-pdf me-1"></i> Print PDF');
+      hideLoading(printButton, originalButtonText);
     })
     .catch(error => {
       console.error('Error generating PDF:', error);
       alert('Failed to generate PDF. Please try again.');
-      hideLoading(printButton, '<i class="fas fa-file-pdf me-1"></i> Print PDF');
+      hideLoading(printButton, originalButtonText);
     });
   });
 
