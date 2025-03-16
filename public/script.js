@@ -44,16 +44,29 @@ window.onload = () => {
 
   const showLoading = (element, text = 'Loading...') => {
     if (!element) return;
+    
+    // Store original text if not already stored
+    if (!element.dataset.originalText && element.innerText) {
+      element.dataset.originalText = element.innerText;
+    }
+    
     element.disabled = true;
     element.classList.add('disabled');
     element.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>${text}`;
   };
 
-  const hideLoading = (element, originalText) => {
+  const hideLoading = (element, originalText = null) => {
     if (!element) return;
+    
     element.disabled = false;
     element.classList.remove('disabled');
-    element.innerHTML = originalText;
+    
+    // Use provided original text or fall back to stored text
+    if (originalText) {
+      element.innerHTML = originalText;
+    } else if (element.dataset.originalText) {
+      element.innerHTML = element.dataset.originalText;
+    }
   };
 
   /**********************************
@@ -125,92 +138,121 @@ window.onload = () => {
    **********************************/
   // Fetch counties and populate dropdown
   const loadCounties = () => {
+    // Ensure the dropdown has a default option before loading
+    countyDropdown.innerHTML = '<option value="">Select a County...</option>';
+    
     // Show loading indicator for county dropdown
     showLoading(countyDropdown, 'Loading counties...');
 
-    fetch('/list-counties')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+    // Using XMLHttpRequest instead of fetch for better compatibility
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', '/list-counties', true);
+    
+    xhr.onload = function() {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        try {
+          const counties = JSON.parse(xhr.responseText);
+          
+          // Clear dropdown and add default option
+          countyDropdown.innerHTML = '<option value="">Select a County...</option>';
+          
+          // Check if we received valid data
+          if (Array.isArray(counties) && counties.length > 0) {
+            // Add each county to the dropdown
+            counties.forEach(county => {
+              const option = document.createElement('option');
+              option.value = county;
+              option.textContent = county;
+              countyDropdown.appendChild(option);
+            });
+            console.log(`Loaded ${counties.length} counties successfully`);
+          } else {
+            console.warn('No counties returned from server or invalid data format');
+          }
+        } catch (error) {
+          console.error('Error parsing county data:', error);
+          alert('Failed to process county data. Please refresh the page.');
         }
-        return response.json();
-      })
-      .then(counties => {
-        // Clear and populate county dropdown
-        countyDropdown.innerHTML = '<option value="">Select a County...</option>';
-        if (Array.isArray(counties) && counties.length > 0) {
-          counties.forEach(county => {
-            const option = document.createElement('option');
-            option.value = county;
-            option.textContent = county;
-            countyDropdown.appendChild(option);
-          });
-          console.log(`Loaded ${counties.length} counties successfully`);
-        } else {
-          console.warn('No counties returned from server or invalid data format');
-        }
-        hideLoading(countyDropdown, 'Select a County...');
-      })
-      .catch(error => {
-        console.error('Error fetching counties:', error);
-        countyDropdown.innerHTML = '<option value="">Select a County...</option>';
-        hideLoading(countyDropdown, 'Select a County...');
-        alert('Failed to load counties. Please try again.');
-      });
+      } else {
+        console.error('Server returned error status:', xhr.status);
+        alert(`Server error (${xhr.status}). Please try again later.`);
+      }
+      
+      // Remove loading indicator
+      hideLoading(countyDropdown);
+    };
+    
+    xhr.onerror = function() {
+      console.error('Network error while fetching counties');
+      alert('Network error. Please check your connection and try again.');
+      hideLoading(countyDropdown);
+    };
+    
+    xhr.send();
   };
 
   // County dropdown change event
-  countyDropdown.addEventListener('change', () => {
-    selectedCounty = countyDropdown.value;
+  countyDropdown.addEventListener('change', function() {
+    selectedCounty = this.value;
     
-    // Reset and clear town dropdown
+    // Reset town dropdown
     townDropdown.innerHTML = '<option value="">Select a Town...</option>';
-    townDropdown.disabled = selectedCounty === '';
+    townDropdown.disabled = !selectedCounty;
     
-    if (selectedCounty && selectedCounty !== '') {
+    if (selectedCounty) {
       // Show loading indicator
       showLoading(townDropdown, 'Loading towns...');
       
-      // Fetch towns for selected county
-      fetch(`/list-towns/${encodeURIComponent(selectedCounty)}`)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+      // Fetch towns for selected county using XMLHttpRequest
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', `/list-towns/${encodeURIComponent(selectedCounty)}`, true);
+      
+      xhr.onload = function() {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          try {
+            const towns = JSON.parse(xhr.responseText);
+            
+            // Clear town dropdown and add default option
+            townDropdown.innerHTML = '<option value="">Select a Town...</option>';
+            
+            // Add town options if data is valid
+            if (Array.isArray(towns) && towns.length > 0) {
+              towns.forEach(town => {
+                const option = document.createElement('option');
+                option.value = town;
+                option.textContent = town.replace('.xlsx', '');
+                townDropdown.appendChild(option);
+              });
+              console.log(`Loaded ${towns.length} towns for ${selectedCounty}`);
+            } else {
+              console.warn(`No towns found for county: ${selectedCounty}`);
+            }
+          } catch (error) {
+            console.error('Error parsing town data:', error);
+            alert('Failed to process town data. Please try again.');
           }
-          return response.json();
-        })
-        .then(towns => {
-          // Clear dropdown first
-          townDropdown.innerHTML = '<option value="">Select a Town...</option>';
-          
-          // Add town options if we have data
-          if (Array.isArray(towns) && towns.length > 0) {
-            towns.forEach(town => {
-              const option = document.createElement('option');
-              option.value = town;
-              option.textContent = town.replace('.xlsx', '');
-              townDropdown.appendChild(option);
-            });
-            console.log(`Loaded ${towns.length} towns for ${selectedCounty}`);
-          } else {
-            console.warn(`No towns found for county: ${selectedCounty}`);
-          }
-          
-          // Remove loading indicator
-          hideLoading(townDropdown, '');
-          townDropdown.disabled = false;
-        })
-        .catch(error => {
-          console.error(`Error fetching towns for ${selectedCounty}:`, error);
-          townDropdown.innerHTML = '<option value="">Error loading towns</option>';
-          townDropdown.disabled = false;
-          hideLoading(townDropdown, 'Select a Town...');
-          alert(`Failed to load towns for ${selectedCounty}. Please try again.`);
-        });
+        } else {
+          console.error('Server returned error status for towns:', xhr.status);
+          alert(`Server error (${xhr.status}). Please try again later.`);
+        }
+        
+        // Remove loading indicator
+        hideLoading(townDropdown);
+        townDropdown.disabled = false;
+      };
+      
+      xhr.onerror = function() {
+        console.error('Network error while fetching towns');
+        alert('Network error. Please check your connection and try again.');
+        hideLoading(townDropdown);
+        townDropdown.disabled = false;
+      };
+      
+      xhr.send();
     } else {
+      // If no county is selected, clear markers
       selectedCounty = null;
       clearMarkers();
-      townDropdown.disabled = true;
     }
   });
 
@@ -243,28 +285,27 @@ window.onload = () => {
   };
 
   // Town dropdown change event
-  townDropdown.addEventListener('change', () => {
-    selectedTown = townDropdown.value;
+  townDropdown.addEventListener('change', function() {
+    selectedTown = this.value;
     
-    if (!selectedTown || selectedTown === '') {
-      clearMarkers();
-      return;
-    }
+    // Clear existing markers
+    clearMarkers();
+    
+    if (!selectedTown) return;
     
     if (selectedCounty && selectedTown) {
-      clearMarkers();
-      const originalText = townDropdown.options[townDropdown.selectedIndex].text;
+      const originalText = this.options[this.selectedIndex].text;
       showLoading(townDropdown, 'Loading data...');
       
-      fetch(`/files/Data_By_Towns_Index/${encodeURIComponent(selectedCounty)}/${encodeURIComponent(selectedTown)}`)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-          }
-          return response.arrayBuffer();
-        })
-        .then(data => {
+      // Use XMLHttpRequest to fetch Excel data
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', `/files/Data_By_Towns_Index/${encodeURIComponent(selectedCounty)}/${encodeURIComponent(selectedTown)}`, true);
+      xhr.responseType = 'arraybuffer';
+      
+      xhr.onload = function() {
+        if (xhr.status >= 200 && xhr.status < 300) {
           try {
+            const data = xhr.response;
             const workbook = XLSX.read(data, { type: 'array' });
             const firstSheetName = workbook.SheetNames[0];
             const worksheet = workbook.Sheets[firstSheetName];
@@ -273,14 +314,19 @@ window.onload = () => {
             markers = [];
             for (let i = 1; i < json.length; i++) {
               const row = json[i];
-              if (row && row.length >= 7 && row[6] && row[5]) { // Ensure lat/lng exist
-                markers.push({
-                  latlng: [parseFloat(row[6]), parseFloat(row[5])],
-                  name: row[0] || 'Unknown',
-                  address: row[1] || 'No address',
-                  notes: row[8] || '',
-                  marker: null
-                });
+              if (row && row.length >= 7 && row[6] && row[5]) {
+                const lat = parseFloat(row[6]);
+                const lng = parseFloat(row[5]);
+                
+                if (!isNaN(lat) && !isNaN(lng)) {
+                  markers.push({
+                    latlng: [lat, lng],
+                    name: row[0] || 'Unknown',
+                    address: row[1] || 'No address',
+                    notes: row[8] || '',
+                    marker: null
+                  });
+                }
               }
             }
             
@@ -295,14 +341,21 @@ window.onload = () => {
             console.error('Error processing Excel data:', error);
             alert('Failed to process town data. The file may be corrupted or in an unexpected format.');
           }
-          
-          hideLoading(townDropdown, originalText);
-        })
-        .catch(error => {
-          console.error('Error fetching or processing data:', error);
-          hideLoading(townDropdown, originalText);
-          alert('Failed to load town data. Please try again.');
-        });
+        } else {
+          console.error('Server returned error status for town data:', xhr.status);
+          alert(`Server error (${xhr.status}). Please try again later.`);
+        }
+        
+        hideLoading(townDropdown, originalText);
+      };
+      
+      xhr.onerror = function() {
+        console.error('Network error while fetching town data');
+        alert('Network error. Please check your connection and try again.');
+        hideLoading(townDropdown, originalText);
+      };
+      
+      xhr.send();
     }
   });
 
@@ -409,8 +462,6 @@ window.onload = () => {
           markersTableBody.appendChild(row);
         }
       });
-      
-      console.log(`Updated table with ${visibleMarkers} visible markers`);
     } catch (error) {
       console.error('Error updating bounds:', error);
     }
@@ -472,26 +523,28 @@ window.onload = () => {
       notes: marker.notes || ''
     }));
     
-    fetch(`/save-notes/${encodeURIComponent(selectedCounty)}/${encodeURIComponent(selectedTown)}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ notes })
-    })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.text();
-      })
-      .then(data => {
+    // Use XMLHttpRequest for saving notes
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', `/save-notes/${encodeURIComponent(selectedCounty)}/${encodeURIComponent(selectedTown)}`, true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    
+    xhr.onload = function() {
+      if (xhr.status >= 200 && xhr.status < 300) {
         alert('Notes saved successfully.');
-        hideLoading(saveButton, originalButtonText);
-      })
-      .catch(error => {
-        console.error('Error saving notes:', error);
-        alert('Failed to save notes. Please try again.');
-        hideLoading(saveButton, originalButtonText);
-      });
+      } else {
+        console.error('Server returned error status for saving notes:', xhr.status);
+        alert(`Failed to save notes. Server error (${xhr.status}).`);
+      }
+      hideLoading(saveButton, originalButtonText);
+    };
+    
+    xhr.onerror = function() {
+      console.error('Network error while saving notes');
+      alert('Failed to save notes. Please check your connection and try again.');
+      hideLoading(saveButton, originalButtonText);
+    };
+    
+    xhr.send(JSON.stringify({ notes }));
   });
 
   /**********************************
@@ -651,8 +704,8 @@ window.onload = () => {
   /**********************************
    *       INITIALIZATION           *
    **********************************/
-  loadCounties();
-  map.whenReady(updateMapLayout);
+  // Initialize town dropdown as disabled
+  townDropdown.disabled = true;
   
   // Add custom CSS for markers
   const style = document.createElement('style');
@@ -693,4 +746,10 @@ window.onload = () => {
     }
   `;
   document.head.appendChild(style);
+  
+  // Load counties when the page is ready
+  loadCounties();
+  
+  // Initialize map
+  map.whenReady(updateMapLayout);
 };
