@@ -7,3 +7,15 @@ node_modules
 PDFs
 .env
 .env
+venv
+node_modules
+address_processing.log
+log.txt
+name_retrieval.log
+patel_results.txt
+town_index.log
+update_all.log
+Middletown.csv
+log.txt
+addy_for_arjun.ipynb
+address_processing.log
