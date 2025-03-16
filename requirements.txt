@@ -1,6 +1,9 @@
-requests
-pandas
-usaddress
-tabulate
-googlemaps
-tqdm
+requests>=2.27.1
+pandas>=1.4.2
+numpy>=1.22.3
+usaddress>=0.5.10
+tabulate>=0.8.9
+googlemaps>=4.6.0
+tqdm>=4.64.0
+openpyxl>=3.0.9
+python-dotenv>=0.20.0
