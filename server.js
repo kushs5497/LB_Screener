@@ -38,7 +38,13 @@ app.get('/list-towns/:county', (req, res) => {
 // Endpoint to save notes to the Excel file
 app.post('/save-notes/:county/:town', (req, res) => {
     const { county, town } = req.params;
-    const notesData = req.body;
+    const notesData = req.body.notes; // Ensure we access the correct key
+
+    console.log('Received notesData:', notesData); // Debugging
+
+    if (!Array.isArray(notesData)) {
+        return res.status(400).send('Invalid data format: Expected an array');
+    }
 
     const filePath = path.join(__dirname, 'public/files/Data_By_Towns_Index', county, town);
 
@@ -48,20 +54,18 @@ app.post('/save-notes/:county/:town', (req, res) => {
         const worksheet = workbook.Sheets[firstSheetName];
         const json = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
-        // Update the JSON data with the new notes
         for (let i = 1; i < json.length; i++) {
             const row = json[i];
-            const notesEntry = notesData.find(entry => entry.name === row[1] && entry.address === row[2]);
+            const notesEntry = notesData.find(entry => 
+                entry.name === row[0] && entry.address === row[1] // Ensure correct indices
+            );
             if (notesEntry) {
-                row[7] = notesEntry.notes;
+                row[8] = notesEntry.notes; // Now storing in column 9 (index 8)
             }
         }
 
-        // Write the updated JSON back to the worksheet
-        const newWorksheet = XLSX.utils.json_to_sheet(json, { skipHeader: true });
+        const newWorksheet = XLSX.utils.aoa_to_sheet(json); // Fix conversion
         workbook.Sheets[firstSheetName] = newWorksheet;
-
-        // Save the workbook
         XLSX.writeFile(workbook, filePath);
 
         res.status(200).send('Notes saved successfully');
@@ -70,6 +74,7 @@ app.post('/save-notes/:county/:town', (req, res) => {
         res.status(500).send('Error saving notes');
     }
 });
+
 
 // Serve index.html as the main page
 app.get('/', (req, res) => {

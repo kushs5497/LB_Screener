@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css" />
     <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.awesome-markers/2.0.4/leaflet.awesome-markers.css">
+    <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css" />
     <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -16,6 +18,15 @@
         src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
     <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <!-- Include these in your HTML head or before your script -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
+
     <style>
         html,
         body {
@@ -28,7 +39,7 @@
             top: 0;
             bottom: 0;
             right: 0;
-            left: 310px;
+            left: 1120px;
         }
 
         #dragMe {
@@ -39,7 +50,7 @@
             z-index: 999;
             top: 0;
             bottom: 0;
-            left: 300px;
+            left: 1110px;
         }
 
         #side-panel {
@@ -47,7 +58,7 @@
             top: 0;
             bottom: 0;
             left: 0;
-            width: 300px;
+            width: 1110px;
             background: white;
             overflow-y: auto;
             box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
@@ -94,6 +105,40 @@
             /* Rounded corners */
             box-shadow: 10px 10 10px rgba(0, 0, 0, 0.1);
         }
+
+        .awesome-marker-number {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 10px;
+            color: white;
+            font-weight: bold;
+            line-height: 25px;
+            /* Adjust to vertically center the number */
+        }
+
+        .btn{
+
+            display: inline-block;
+                    outline: 0;
+                    border: none;
+                    cursor: pointer;
+                    font-weight: 600;
+                    border-radius: 4px;
+                    font-size: 13px;
+                    height: 30px;
+                    background-color: #0000000d;
+                    color: #0e0e10;
+                    padding: 0 20px;
+                    :hover {
+                        background-color: #000000a5;
+                    }
+                
+        }
+
+        
     </style>
     </style>
 </head>
@@ -111,6 +156,7 @@
             <table id="markers-table">
                 <thead>
                     <tr>
+                        <th>Index</th>
                         <th>Name</th>
                         <th>Address</th>
                         <th>Notes</th>

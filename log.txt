@@ -1,0 +1,3 @@
+INFO:root:Log of Run on 2025-02-06 01:28:51.054610
+INFO:googlemaps.client:API queries_quota: 60
+INFO:googlemaps.client:API queries_quota: 60

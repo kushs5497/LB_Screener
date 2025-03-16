@@ -1,0 +1,6 @@
+requests
+pandas
+usaddress
+tabulate
+googlemaps
+tqdm
