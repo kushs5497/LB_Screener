@@ -12,6 +12,12 @@ window.onload = () => {
   const markersTable = document.getElementById('markers-table');
   const markersTableBody = markersTable.querySelector('tbody');
 
+  // Check if buttons already exist and remove them to prevent duplicates
+  const existingSaveButton = document.getElementById('saveNotesButton');
+  const existingPrintButton = document.getElementById('printPdfButton');
+  if (existingSaveButton) existingSaveButton.remove();
+  if (existingPrintButton) existingPrintButton.remove();
+
   /**********************************
    *      APPLICATION VARIABLES     *
    **********************************/
@@ -169,13 +175,15 @@ window.onload = () => {
           markers = [];
           for (let i = 1; i < json.length; i++) {
             const row = json[i];
-            markers.push({
-              latlng: [row[6], row[5]], // Adjust indices if needed
-              name: row[0],
-              address: row[1],
-              notes: row[8] || '',
-              marker: null
-            });
+            if (row && row.length >= 7) {
+              markers.push({
+                latlng: [row[6], row[5]], // Adjust indices if needed
+                name: row[0] || 'Unknown',
+                address: row[1] || 'No address',
+                notes: row[8] || '',
+                marker: null
+              });
+            }
           }
 
           if (markers.length > 0) {
@@ -265,13 +273,13 @@ window.onload = () => {
       const textarea = row.querySelector('textarea');
       // Use the marker object to get name and address
       const markerObj = markers[index];
-      if (textarea) {
+      if (textarea && markerObj) {
         notes.push({
           name: markerObj.name,
           address: markerObj.address,
           notes: textarea.value
         });
-      } else {
+      } else if (markerObj) {
         notes.push({
           name: markerObj.name,
           address: markerObj.address,
@@ -297,18 +305,9 @@ window.onload = () => {
       });
   };
 
-  const saveButton = document.createElement('button');
-  saveButton.classList.add('btn', 'btn-primary');
-  saveButton.innerHTML = '<i class="fas fa-save me-1"></i> Save Notes';
-  saveButton.style.marginTop = "10px";
-  saveButton.addEventListener('click', saveNotes);
-  document.getElementById('side-panel').appendChild(saveButton);
-
   /**********************************
    *         PRINT PDF FUNCTION     *
    **********************************/
-  // This function uses html2canvas to capture the mapDiv, then creates a PDF
-  // with a two‑column layout: the addresses table on the left and the map on the right.
   const { jsPDF } = window.jspdf;
   const generatePDF = () => {
     // Capture the current map view using html2canvas with CORS enabled
@@ -381,12 +380,28 @@ window.onload = () => {
     });
   };
 
+  /**********************************
+   *       CREATE UI BUTTONS        *
+   **********************************/
+  // Create and add Save Notes button (blue styling)
+  const saveButton = document.createElement('button');
+  saveButton.id = 'saveNotesButton'; // Add ID to prevent duplicates
+  saveButton.classList.add('btn', 'btn-primary'); // Add primary class for blue styling
+  saveButton.textContent = 'Save Notes';
+  saveButton.style.marginTop = "10px";
+  saveButton.addEventListener('click', saveNotes);
+  
+  // Create and add Print PDF button (blue styling)
   const printButton = document.createElement('button');
-  printButton.classList.add('btn', 'btn-outline-secondary');
-  printButton.innerHTML = '<i class="fas fa-file-pdf me-1"></i> Print PDF';
+  printButton.id = 'printPdfButton'; // Add ID to prevent duplicates
+  printButton.classList.add('btn', 'btn-primary'); // Add primary class for blue styling
+  printButton.textContent = 'Print PDF';
   printButton.style.marginTop = "10px";
   printButton.style.marginLeft = "10px";
   printButton.addEventListener('click', generatePDF);
+  
+  // Add buttons to the side panel
+  document.getElementById('side-panel').appendChild(saveButton);
   document.getElementById('side-panel').appendChild(printButton);
 
   /**********************************
@@ -403,10 +418,10 @@ window.onload = () => {
       const lat = parseFloat(row.dataset.lat);
       const lng = parseFloat(row.dataset.lng);
       if (boxBounds.contains([lat, lng])) {
-        row.classList.add('table-primary');
+        row.style.fontWeight = 'bold';
         selectedRows.push(row);
       } else {
-        row.classList.remove('table-primary');
+        row.style.fontWeight = 'normal';
         otherRows.push(row);
       }
     });
@@ -416,4 +431,50 @@ window.onload = () => {
   });
 
   map.whenReady(updateBounds);
+  
+  /**********************************
+   *         STYLE FIXES            *
+   **********************************/
+  // Add custom CSS to fix styling issues
+  const style = document.createElement('style');
+  style.textContent = `
+    .btn-primary {
+      background-color: #0d6efd;
+      border-color: #0d6efd;
+      color: white;
+    }
+    .btn-primary:hover {
+      background-color: #0b5ed7;
+      border-color: #0a58ca;
+    }
+    #map {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      left: 1120px; /* Initial position, will be updated by drag */
+    }
+    #dragMe {
+      position: absolute;
+      width: 10px;
+      cursor: col-resize;
+      background-color: lightgray;
+      z-index: 999;
+      top: 0;
+      bottom: 0;
+      left: 1110px; /* Initial position, will be updated by drag */
+    }
+    #side-panel {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 1110px; /* Initial width, will be updated by drag */
+      background: white;
+      overflow-y: auto;
+      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+      padding: 10px;
+    }
+  `;
+  document.head.appendChild(style);
 };
