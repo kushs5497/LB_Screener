@@ -4,12 +4,12 @@ import sys
 import time
 import logging
 import pandas as pd
+import re
+import requests
 from typing import Dict, List, Tuple, Any
 from concurrent.futures import ThreadPoolExecutor, as_completed
-import selenium_functions as sf
 from tqdm import tqdm
 from pathlib import Path
-import requests
 from io import StringIO
 
 # Import our custom modules
@@ -18,7 +18,7 @@ from get_addresses import GetAddress
 
 class GetName:
     """
-    Class to handle retrieval of names and addresses from web sources.
+    Class to handle retrieval of names and addresses from web API sources.
     """
     
     def __init__(self, links_excel: str = "links.xlsx", 
@@ -79,10 +79,105 @@ class GetName:
             self.logger.error(f"Failed to fetch last names: {str(e)}")
             return pd.Series()
 
+    def create_payload(self, last_name: str, wippid: str = "23") -> str:
+        """
+        Create API payload for the request.
+        
+        Args:
+            last_name: Last name to search for
+            wippid: WIPP ID for the request
+            
+        Returns:
+            Formatted payload string
+        """
+        return f'7|0|9|https://wipp.edmundsassoc.com/Wipp/wipp/|6097249917502855D47FCE321E6AF9E1|wipp.client.WippService|taxOwnerNameSearch|java.lang.String/2004016611|Z|{wippid}|{last_name}||1|2|3|4|4|5|5|5|6|7|8|9|1|'
+
+    def fetch_data(self, last_name: str, wippid: str = "23") -> str:
+        """
+        Send API request to fetch data.
+        
+        Args:
+            last_name: Last name to search for
+            wippid: WIPP ID for the request
+            
+        Returns:
+            API response text or None if request failed
+        """
+        url = "https://wipp.edmundsassoc.com/Wipp/wipp/wipp"
+        headers = {
+            "Content-Type": "text/x-gwt-rpc; charset=UTF-8",
+            "User-Agent": "Mozilla/5.0",
+            "Origin": "https://wipp.edmundsassoc.com",
+            "Referer": f"https://wipp.edmundsassoc.com/Wipp/?wippid={wippid}",
+            "X-GWT-Module-Base": "https://wipp.edmundsassoc.com/Wipp/wipp/",
+            "X-GWT-Permutation": "6097249917502855D47FCE321E6AF9E1",
+            "Accept-Encoding": "gzip, deflate, br"
+        }
+        
+        payload = self.create_payload(last_name, wippid)
+        
+        try:
+            response = requests.post(url, data=payload, headers=headers)
+            response.raise_for_status()
+            return response.text
+        except requests.exceptions.RequestException as e:
+            self.logger.warning(f"Error fetching {last_name}: {str(e)}")
+            return None
+
+    def parse_response(self, response: str, last_name: str, municipality: str) -> List[Dict]:
+        """
+        Parse API response to extract names and addresses.
+        
+        Args:
+            response: API response text
+            last_name: Last name that was searched
+            municipality: Municipality name
+            
+        Returns:
+            List of dictionaries containing name and address information
+        """
+        if not response:
+            return []
+            
+        try:
+            # Extract the list part (inside square brackets)
+            match = re.search(r'\["java.util.ArrayList/4159755760","java.lang.String/2004016611",(.*)]', response)
+            if not match:
+                self.logger.warning(f"No valid data found for {last_name}")
+                return []
+            
+            raw_data = match.group(1)
+            
+            # Use a regex pattern to correctly extract quoted values, handling embedded commas
+            pattern = r'"([^"]*?)"'
+            extracted_data = re.findall(pattern, raw_data)
+
+            # Group data into (Full Name, Address, Extra Info)
+            parsed_data = []
+            for i in range(0, len(extracted_data), 3):
+                if i + 2 < len(extracted_data):
+                    full_name = extracted_data[i].strip().replace('\\x26','')
+                    address = extracted_data[i + 1].strip()
+                    extra_info = extracted_data[i + 2].strip()
+                    
+                    # Only include if last name is in full name
+                    if last_name.lower() in full_name.lower():
+                        parsed_data.append({
+                            "Owner Name": full_name,
+                            "Property Location": address,
+                            "Municipality": municipality,
+                            "Search": last_name
+                        })
+
+            return parsed_data
+        except Exception as e:
+            self.logger.error(f"Error parsing response for {last_name}: {str(e)}")
+            return []
+
     def process_town(self, county: str, row: pd.Series, index: int, 
                      last_names_to_itr: pd.Series) -> Tuple[str, List[Dict]]:
         """
-        Process a town to get names and addresses.
+        Process a town to get names and addresses using API.
         
         Args:
             county: County name
@@ -93,40 +188,52 @@ class GetName:
         Returns:
             Tuple of (town name, list of address dictionaries)
         """
-        driver = sf.web_driver()
-        data = []
         municipality = row['Municipality']
+        wippid = row.get('Wippid', "23")  # Default to 23 if not specified
         
         # Create description for progress bar
         description = f'{municipality} {index} of {self.links_df.shape[0]}'
         spaces = ' ' * (35 - len(description))
         
+        data = []
+        
         try:
             for name in tqdm(last_names_to_itr, desc=f'{description}{spaces}'):
-                search_results = sf.search_lastname_town(row['Municipality'], row['Link'], name, data, driver)
-                if search_results is None: 
-                    self.logger.warning(f'No results found for {county}/{row["Municipality"]}/{name}')
-                    break
-                data = search_results
+                if not name.strip():
+                    continue
+                    
+                self.logger.debug(f"Fetching data for {name} in {municipality}")
+                response = self.fetch_data(name, wippid)
+                
+                if response:
+                    results = self.parse_response(response, name, municipality)
+                    data.extend(results)
+                    
+                    # Break if no data is coming back, no need to keep trying more names
+                    if not results and len(data) > 0:
+                        self.logger.warning(f'No more results for {county}/{municipality}/{name}')
+                        break
 
             # Create DataFrame from collected data
-            df = pd.DataFrame(data, columns=["Owner Name", "Property Location", "Municipality", "Search"])
+            df = pd.DataFrame(data)
             
-            # Create county directory if it doesn't exist
-            county_dir = os.path.join(self.data_output_dir, county)
-            os.makedirs(county_dir, exist_ok=True)
-            
-            # Save data to CSV file
-            csv_path = os.path.join(county_dir, f"{row['Municipality']}.csv")
-            df.to_csv(csv_path, index=False)
-            
-            self.logger.info(f'Completed {row["Municipality"]} with {len(data)} records')
+            if not df.empty:
+                # Create county directory if it doesn't exist
+                county_dir = os.path.join(self.data_output_dir, county)
+                os.makedirs(county_dir, exist_ok=True)
+                
+                # Save data to CSV file
+                csv_path = os.path.join(county_dir, f"{municipality}.csv")
+                df.to_csv(csv_path, index=False)
+                
+                self.logger.info(f'Completed {municipality} with {len(data)} records')
+            else:
+                self.logger.warning(f'No data found for {municipality}')
+                
             return municipality, data
         except Exception as e:
             self.logger.error(f'Error processing {municipality}: {str(e)}')
             return municipality, []
-        finally:
-            driver.quit()
 
     def get_towns_data(self, county: str) -> Dict[str, List[Dict]]:
         """
