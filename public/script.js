@@ -43,12 +43,14 @@ window.onload = () => {
   const debouncedUpdateMapLayout = debounce(updateMapLayout, 100);
 
   const showLoading = (element, text = 'Loading...') => {
+    if (!element) return;
     element.disabled = true;
     element.classList.add('disabled');
     element.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>${text}`;
   };
 
   const hideLoading = (element, originalText) => {
+    if (!element) return;
     element.disabled = false;
     element.classList.remove('disabled');
     element.innerHTML = originalText;
@@ -123,6 +125,9 @@ window.onload = () => {
    **********************************/
   // Fetch counties and populate dropdown
   const loadCounties = () => {
+    // Show loading indicator for county dropdown
+    showLoading(countyDropdown, 'Loading counties...');
+
     fetch('/list-counties')
       .then(response => {
         if (!response.ok) {
@@ -131,16 +136,25 @@ window.onload = () => {
         return response.json();
       })
       .then(counties => {
+        // Clear and populate county dropdown
         countyDropdown.innerHTML = '<option value="">Select a County...</option>';
-        counties.forEach(county => {
-          const option = document.createElement('option');
-          option.value = county;
-          option.textContent = county;
-          countyDropdown.appendChild(option);
-        });
+        if (Array.isArray(counties) && counties.length > 0) {
+          counties.forEach(county => {
+            const option = document.createElement('option');
+            option.value = county;
+            option.textContent = county;
+            countyDropdown.appendChild(option);
+          });
+          console.log(`Loaded ${counties.length} counties successfully`);
+        } else {
+          console.warn('No counties returned from server or invalid data format');
+        }
+        hideLoading(countyDropdown, 'Select a County...');
       })
       .catch(error => {
         console.error('Error fetching counties:', error);
+        countyDropdown.innerHTML = '<option value="">Select a County...</option>';
+        hideLoading(countyDropdown, 'Select a County...');
         alert('Failed to load counties. Please try again.');
       });
   };
@@ -148,12 +162,17 @@ window.onload = () => {
   // County dropdown change event
   countyDropdown.addEventListener('change', () => {
     selectedCounty = countyDropdown.value;
+    
+    // Reset and clear town dropdown
     townDropdown.innerHTML = '<option value="">Select a Town...</option>';
+    townDropdown.disabled = selectedCounty === '';
     
     if (selectedCounty && selectedCounty !== '') {
+      // Show loading indicator
       showLoading(townDropdown, 'Loading towns...');
       
-      fetch(`/list-towns/${selectedCounty}`)
+      // Fetch towns for selected county
+      fetch(`/list-towns/${encodeURIComponent(selectedCounty)}`)
         .then(response => {
           if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
@@ -161,76 +180,37 @@ window.onload = () => {
           return response.json();
         })
         .then(towns => {
-          // Clear existing options and add default first
+          // Clear dropdown first
           townDropdown.innerHTML = '<option value="">Select a Town...</option>';
           
-          // Add town options
-          towns.forEach(town => {
-            const option = document.createElement('option');
-            option.value = town;
-            option.textContent = town.replace('.xlsx', '');
-            townDropdown.appendChild(option);
-          });
+          // Add town options if we have data
+          if (Array.isArray(towns) && towns.length > 0) {
+            towns.forEach(town => {
+              const option = document.createElement('option');
+              option.value = town;
+              option.textContent = town.replace('.xlsx', '');
+              townDropdown.appendChild(option);
+            });
+            console.log(`Loaded ${towns.length} towns for ${selectedCounty}`);
+          } else {
+            console.warn(`No towns found for county: ${selectedCounty}`);
+          }
           
-          hideLoading(townDropdown, 'Select a Town...');
+          // Remove loading indicator
+          hideLoading(townDropdown, '');
+          townDropdown.disabled = false;
         })
         .catch(error => {
-          console.error('Error fetching towns:', error);
-          townDropdown.innerHTML = '<option value="">Select a Town...</option>';
+          console.error(`Error fetching towns for ${selectedCounty}:`, error);
+          townDropdown.innerHTML = '<option value="">Error loading towns</option>';
           townDropdown.disabled = false;
-          alert('Failed to load towns. Please try again.');
+          hideLoading(townDropdown, 'Select a Town...');
+          alert(`Failed to load towns for ${selectedCounty}. Please try again.`);
         });
     } else {
       selectedCounty = null;
       clearMarkers();
-    }
-  });
-
-  // Town dropdown change event
-  townDropdown.addEventListener('change', () => {
-    selectedTown = townDropdown.value;
-    
-    if (selectedCounty && selectedTown) {
-      clearMarkers();
-      showLoading(townDropdown, 'Loading data...');
-      
-      fetch(`/files/Data_By_Towns_Index/${selectedCounty}/${selectedTown}`)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-          }
-          return response.arrayBuffer();
-        })
-        .then(data => {
-          const workbook = XLSX.read(data, { type: 'array' });
-          const firstSheetName = workbook.SheetNames[0];
-          const worksheet = workbook.Sheets[firstSheetName];
-          const json = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-          
-          markers = [];
-          for (let i = 1; i < json.length; i++) {
-            const row = json[i];
-            if (row[6] && row[5]) { // Ensure lat/lng exist
-              markers.push({
-                latlng: [row[6], row[5]],
-                name: row[0] || 'Unknown',
-                address: row[1] || 'No address',
-                notes: row[8] || '',
-                marker: null
-              });
-            }
-          }
-          
-          createMarkers();
-          hideLoading(townDropdown, selectedTown.replace('.xlsx', ''));
-        })
-        .catch(error => {
-          console.error('Error fetching or processing data:', error);
-          hideLoading(townDropdown, selectedTown.replace('.xlsx', ''));
-          alert('Failed to load data. Please try again.');
-        });
-    } else {
-      clearMarkers();
+      townDropdown.disabled = true;
     }
   });
 
@@ -262,48 +242,119 @@ window.onload = () => {
     markersTableBody.innerHTML = '';
   };
 
-  // Create markers on the map from loaded data
-  const createMarkers = () => {
-    if (markers.length === 0) {
-      alert('No valid marker data found for this town.');
+  // Town dropdown change event
+  townDropdown.addEventListener('change', () => {
+    selectedTown = townDropdown.value;
+    
+    if (!selectedTown || selectedTown === '') {
+      clearMarkers();
       return;
     }
+    
+    if (selectedCounty && selectedTown) {
+      clearMarkers();
+      const originalText = townDropdown.options[townDropdown.selectedIndex].text;
+      showLoading(townDropdown, 'Loading data...');
+      
+      fetch(`/files/Data_By_Towns_Index/${encodeURIComponent(selectedCounty)}/${encodeURIComponent(selectedTown)}`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.arrayBuffer();
+        })
+        .then(data => {
+          try {
+            const workbook = XLSX.read(data, { type: 'array' });
+            const firstSheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[firstSheetName];
+            const json = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+            
+            markers = [];
+            for (let i = 1; i < json.length; i++) {
+              const row = json[i];
+              if (row && row.length >= 7 && row[6] && row[5]) { // Ensure lat/lng exist
+                markers.push({
+                  latlng: [parseFloat(row[6]), parseFloat(row[5])],
+                  name: row[0] || 'Unknown',
+                  address: row[1] || 'No address',
+                  notes: row[8] || '',
+                  marker: null
+                });
+              }
+            }
+            
+            if (markers.length > 0) {
+              createMarkers();
+              console.log(`Loaded ${markers.length} markers for ${selectedTown}`);
+            } else {
+              console.warn(`No valid marker data found for ${selectedTown}`);
+              alert('No valid marker data found for this town.');
+            }
+          } catch (error) {
+            console.error('Error processing Excel data:', error);
+            alert('Failed to process town data. The file may be corrupted or in an unexpected format.');
+          }
+          
+          hideLoading(townDropdown, originalText);
+        })
+        .catch(error => {
+          console.error('Error fetching or processing data:', error);
+          hideLoading(townDropdown, originalText);
+          alert('Failed to load town data. Please try again.');
+        });
+    }
+  });
+
+  // Create markers on the map from loaded data
+  const createMarkers = () => {
+    if (markers.length === 0) return;
     
     // Clear existing markers
     markerLayer.clearLayers();
     
     // Create new markers
     markers.forEach((markerData, index) => {
-      const numberedIcon = createNumberedIcon(index + 1);
-      const marker = L.marker(markerData.latlng, { icon: numberedIcon })
-        .bindPopup(`
-          <div class="marker-popup">
-            <h6>${markerData.name}</h6>
-            <p>${markerData.address}</p>
-            <hr>
-            <small><i>${markerData.notes}</i></small>
-          </div>
-        `);
-      
-      marker.on('click', () => {
-        // Highlight corresponding row in table
-        const rows = markersTableBody.querySelectorAll('tr');
-        rows.forEach(row => row.classList.remove('table-active'));
-        const targetRow = markersTableBody.querySelector(`tr[data-index="${index}"]`);
-        if (targetRow) {
-          targetRow.classList.add('table-active');
-          targetRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-      });
-      
-      markerData.marker = marker;
-      markerLayer.addLayer(marker);
+      try {
+        const numberedIcon = createNumberedIcon(index + 1);
+        const marker = L.marker(markerData.latlng, { icon: numberedIcon })
+          .bindPopup(`
+            <div class="marker-popup">
+              <h6>${markerData.name}</h6>
+              <p>${markerData.address}</p>
+              <hr>
+              <small><i>${markerData.notes}</i></small>
+            </div>
+          `);
+        
+        marker.on('click', () => {
+          // Highlight corresponding row in table
+          const rows = markersTableBody.querySelectorAll('tr');
+          rows.forEach(row => row.classList.remove('table-active'));
+          const targetRow = markersTableBody.querySelector(`tr[data-index="${index}"]`);
+          if (targetRow) {
+            targetRow.classList.add('table-active');
+            targetRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        });
+        
+        markerData.marker = marker;
+        markerLayer.addLayer(marker);
+      } catch (error) {
+        console.error(`Error creating marker ${index}:`, error);
+      }
     });
     
     // Fit map to marker bounds with padding
     if (markers.length > 0) {
-      const bounds = L.latLngBounds(markers.map(marker => marker.latlng));
-      map.fitBounds(bounds, { padding: [50, 50] });
+      try {
+        const bounds = L.latLngBounds(markers.map(marker => marker.latlng));
+        map.fitBounds(bounds, { padding: [50, 50] });
+      } catch (error) {
+        console.error('Error fitting bounds:', error);
+        // Fallback to default view if bounds calculation fails
+        map.setView([40.058323, -74.405663], 8.5);
+      }
     }
     
     updateBounds();
@@ -313,46 +364,56 @@ window.onload = () => {
    *    UPDATE MARKERS TABLE        *
    **********************************/
   const updateBounds = () => {
-    const bounds = map.getBounds();
-    markersTableBody.innerHTML = '';
+    if (!map || !markersTableBody) return;
     
-    markers.forEach((markerData, index) => {
-      if (bounds.contains(markerData.latlng)) {
-        const row = document.createElement('tr');
-        row.dataset.index = index;
-        row.dataset.lat = markerData.latlng[0];
-        row.dataset.lng = markerData.latlng[1];
-        
-        // Index cell
-        const indexCell = document.createElement('td');
-        indexCell.textContent = index + 1;
-        row.appendChild(indexCell);
-        
-        // Name cell
-        const nameCell = document.createElement('td');
-        nameCell.textContent = markerData.name;
-        row.appendChild(nameCell);
-        
-        // Address cell
-        const addressCell = document.createElement('td');
-        addressCell.textContent = markerData.address;
-        row.appendChild(addressCell);
-        
-        // Notes cell with textarea
-        const notesCell = document.createElement('td');
-        const textarea = document.createElement('textarea');
-        textarea.value = markerData.notes;
-        textarea.rows = 2;
-        textarea.classList.add('form-control');
-        textarea.addEventListener('input', () => {
-          markerData.notes = textarea.value;
-        });
-        notesCell.appendChild(textarea);
-        row.appendChild(notesCell);
-        
-        markersTableBody.appendChild(row);
-      }
-    });
+    try {
+      const bounds = map.getBounds();
+      markersTableBody.innerHTML = '';
+      
+      let visibleMarkers = 0;
+      markers.forEach((markerData, index) => {
+        if (bounds.contains(markerData.latlng)) {
+          visibleMarkers++;
+          const row = document.createElement('tr');
+          row.dataset.index = index;
+          row.dataset.lat = markerData.latlng[0];
+          row.dataset.lng = markerData.latlng[1];
+          
+          // Index cell
+          const indexCell = document.createElement('td');
+          indexCell.textContent = index + 1;
+          row.appendChild(indexCell);
+          
+          // Name cell
+          const nameCell = document.createElement('td');
+          nameCell.textContent = markerData.name;
+          row.appendChild(nameCell);
+          
+          // Address cell
+          const addressCell = document.createElement('td');
+          addressCell.textContent = markerData.address;
+          row.appendChild(addressCell);
+          
+          // Notes cell with textarea
+          const notesCell = document.createElement('td');
+          const textarea = document.createElement('textarea');
+          textarea.value = markerData.notes;
+          textarea.rows = 2;
+          textarea.classList.add('form-control');
+          textarea.addEventListener('input', () => {
+            markerData.notes = textarea.value;
+          });
+          notesCell.appendChild(textarea);
+          row.appendChild(notesCell);
+          
+          markersTableBody.appendChild(row);
+        }
+      });
+      
+      console.log(`Updated table with ${visibleMarkers} visible markers`);
+    } catch (error) {
+      console.error('Error updating bounds:', error);
+    }
   };
 
   /**********************************
@@ -365,6 +426,11 @@ window.onload = () => {
         const index = parseInt(row.dataset.index, 10);
         const lat = parseFloat(row.dataset.lat);
         const lng = parseFloat(row.dataset.lng);
+        
+        if (isNaN(lat) || isNaN(lng)) {
+          console.error('Invalid coordinates in row:', row);
+          return;
+        }
         
         // Highlight clicked row
         const rows = markersTableBody.querySelectorAll('tr');
@@ -391,6 +457,11 @@ window.onload = () => {
       return;
     }
     
+    if (markers.length === 0) {
+      alert('No marker data to save.');
+      return;
+    }
+    
     const originalButtonText = saveButton.innerHTML;
     showLoading(saveButton, 'Saving...');
     
@@ -398,10 +469,10 @@ window.onload = () => {
     const notes = markers.map(marker => ({
       name: marker.name,
       address: marker.address,
-      notes: marker.notes
+      notes: marker.notes || ''
     }));
     
-    fetch(`/save-notes/${selectedCounty}/${selectedTown}`, {
+    fetch(`/save-notes/${encodeURIComponent(selectedCounty)}/${encodeURIComponent(selectedTown)}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ notes })
